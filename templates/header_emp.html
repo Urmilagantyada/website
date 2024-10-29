@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>headerr with dropdownn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* headerr Styling */
+        .headerr {
+            background-color: #2C3E50; /* Darker background color */
+            overflow: hidden;
+        }
+
+        .headerr a {
+            float: left;
+            display: block;
+            color: white; /* Set text color to white */
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .headerr a:hover {
+            background-color: #5fe923; /* New hover color */
+            color: white; /* Keep text color white on hover */
+        }
+
+        .headerr .dropdownn {
+            float: left;
+            overflow: hidden;
+        }
+
+        .headerr .dropdownn .dropbtnn {
+            font-size: 14px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+
+        .headerr .dropdownn-content {
+            display: none;
+            position: absolute;
+            background-color: #16c2d8; /* dropdownn background color */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .headerr .dropdownn-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .headerr .dropdownn-content a:hover {
+            background-color: #55db34; /* New dropdownn item hover color */
+            color: white; /* Keep text color white on hover */
+        }
+
+        .headerr .dropdownn:hover .dropdownn-content {
+            display: block;
+        }
+
+        .headerr .dropdownn:hover .dropbtnn {
+            background-color: #2980B9; /* dropdownn button hover color */
+            color: white; 
+        }
+
+        /* Ensure all buttons/cards fit in one row */
+        .headerr a, .headerr .dropdownn {
+            width: 10%; /* Adjust width to fit all links on one row */
+        }
+
+        /* Hover Effect for Links and dropdownns */
+        .headerr a:hover, .headerr .dropdownn:hover .dropbtnn {
+            transition: 0.3s;
+            background-color: #24ba19; /* Updated hover effect color */
+            color: #fff;
+            
+        }
+
+        /* Add transition for hover effect */
+        .headerr .dropdownn-content a:hover {
+            background-color: #0fbdcd; /* Updated hover effect color */
+            color: white;
+            
+        }
+
+        /* Change all icon colors to white */
+        .headerr i {
+            color: white; /* Set all icon colors to white */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- headerr -->
+    <div class="headerr">
+        <a class="nav-link" href="{{ url_for('index_emp') }}">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+
+
+        <a href="{{ url_for('RFQQ') }}">
+            <i class="fa fa-user-plus" aria-hidden="true"></i> RFQs
+        </a>
+
+        
+
+       
+    </div>
+
+</body>
+</html>

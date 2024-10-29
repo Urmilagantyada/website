@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>headerr with dropdownn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* headerr Styling */
+        .headerr {
+            background-color: #2C3E50; /* Darker background color */
+            overflow: hidden;
+        }
+
+        .headerr a {
+            float: left;
+            display: block;
+            color: white; /* Set text color to white */
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .headerr a:hover {
+            background-color: #5fe923; /* New hover color */
+            color: white; /* Keep text color white on hover */
+        }
+
+        .headerr .dropdownn {
+            float: left;
+            overflow: hidden;
+        }
+
+        .headerr .dropdownn .dropbtnn {
+            font-size: 14px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+
+        .headerr .dropdownn-content {
+            display: none;
+            position: absolute;
+            background-color: #16c2d8; /* dropdownn background color */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .headerr .dropdownn-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .headerr .dropdownn-content a:hover {
+            background-color: #55db34; /* New dropdownn item hover color */
+            color: white; /* Keep text color white on hover */
+        }
+
+        .headerr .dropdownn:hover .dropdownn-content {
+            display: block;
+        }
+
+        .headerr .dropdownn:hover .dropbtnn {
+            background-color: #2980B9; /* dropdownn button hover color */
+            color: white; 
+        }
+
+        /* Ensure all buttons/cards fit in one row */
+        .headerr a, .headerr .dropdownn {
+            width: 10%; /* Adjust width to fit all links on one row */
+        }
+
+        /* Hover Effect for Links and dropdownns */
+        .headerr a:hover, .headerr .dropdownn:hover .dropbtnn {
+            transition: 0.3s;
+            background-color: #24ba19; /* Updated hover effect color */
+            color: #fff;
+            
+        }
+
+        /* Add transition for hover effect */
+        .headerr .dropdownn-content a:hover {
+            background-color: #0fbdcd; /* Updated hover effect color */
+            color: white;
+            
+        }
+
+        /* Change all icon colors to white */
+        .headerr i {
+            color: white; /* Set all icon colors to white */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- headerr -->
+    <div class="headerr">
+        <a class="nav-link" href="{{ url_for('index') }}">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+
+        <a class="nav-link" href="{{ url_for('Customers') }}">
+            <i class="fas fa-book-open"></i> Customers
+        </a>
+
+        <a class="nav-link" href="{{ url_for('Suppliers') }}">
+            <i class="fa fa-list" aria-hidden="true"></i> Suppliers
+        </a>
+
+        <a class="nav-link" href="{{ url_for('Employee') }}">
+            <i class="fa fa-users" aria-hidden="true"></i> Employees
+        </a>
+
+        <div class="dropdownn">
+            <button class="dropbtnn">            <i class="fa fa-users" aria-hidden="true"></i>
+                Manufacturers 
+                <i class="arrow-down"></i>
+            </button>
+            <div class="dropdownn-content">
+                
+                <a href="{{ url_for('Manfactured') }}">        
+                    Manufactured_Products</a>
+                <a href="{{ url_for('Manfactured_Supp') }}">Manufactured_Suppliers</a>
+            </div>
+        </div>
+
+        <a href="{{ url_for('Item') }}">
+            <i class="fa fa-industry" aria-hidden="true"></i> Distribution
+        </a>
+
+        <a href="{{ url_for('RFQ') }}">
+            <i class="fa fa-user-plus" aria-hidden="true"></i> RFQs
+        </a>
+
+        <a href="{{ url_for('Suppliers_Offers') }}">
+            <i class="fa fa-user-circle" aria-hidden="true"></i> Suppliers Offers
+        </a>
+
+        <a href="{{ url_for('PartNo') }}">
+            <i class="fa fa-user-shopping-bag" aria-hidden="true"></i> Parts
+        </a>
+
+        <a href="{{ url_for('CrossRefPart') }}">
+            <i class="fa fa-user-circle" aria-hidden="true"></i> Cross Reference Part
+        </a>
+<!-- 
+        <a href="{{ url_for('Designation') }}">
+            <i class="fa fa-anchor" aria-hidden="true"></i> Designation
+        </a> -->
+
+        <a href="{{ url_for('Delivery_terms') }}">
+            <i class="fa fa-asterisk" aria-hidden="true"></i> Delivery
+        </a>
+
+        <a href="{{ url_for('Expenses') }}">
+            <i class="fa fa-credit-card" aria-hidden="true"></i> Expenses
+        </a>
+
+        <a href="{{ url_for('Information') }}">
+            <i class="fa fa-street-view" aria-hidden="true"></i> Information
+        </a>
+
+        <a href="{{ url_for('Terminology') }}">
+            <i class="fa fa-paw" aria-hidden="true"></i> Terminology
+        </a>
+
+        <a href="{{ url_for('Followup') }}">
+            <i class="fa fa-ship" aria-hidden="true"></i> Follow Up
+        </a>
+
+        <div class="dropdownn">
+            <button class="dropbtnn">            <i class="fa fa-dollar-sign" aria-hidden="true"></i>
+                Quotation
+                <i class="arrow-down"></i>
+            </button>
+            <div class="dropdownn-content">
+                <a href="{{ url_for('CustomerQuotation') }}">Customer_Quotation</a>
+                <a href="{{ url_for('SupplierQuotation') }}">Supplier_Quotation</a>
+            </div>
+        </div>
+
+        
+
+        <div class="dropdownn">
+            <button class="dropbtnn">            <i class="fa fa-dollar-sign" aria-hidden="true"></i>
+                Purchase Orders 
+                <i class="arrow-down"></i>
+            </button>
+            <div class="dropdownn-content">
+                <a href="{{ url_for('Customer_Po') }}">Customer_P.O</a>
+                <a href="{{ url_for('Supplier_Po') }}">Supplier_P.O</a>
+            </div>
+        </div>
+
+        <div class="dropdownn">
+            <button class="dropbtnn">            <i class="fa fa-user" aria-hidden="true"></i>
+                Invoices
+                <i class="arrow-down"></i>
+            </button>
+            <div class="dropdownn-content">
+                <a href="{{ url_for('CustomerInvoice') }}">Customer_Invoice</a>
+                <a href="{{ url_for('SupplierInvoice') }}">Supplier_Invoice</a>
+            </div>
+        </div>
+
+        <div class="dropdownn">
+            <button class="dropbtnn">            <i class="fa fa-flag" aria-hidden="true"></i>
+                Reports
+                <i class="arrow-down"></i>
+            </button>
+            <div class="dropdownn-content">
+                <a href="{{ url_for('PartNo') }}">Profit&Loss</a>
+                <a href="{{ url_for('CrossRefPart') }}">Sales</a>
+                <a href="{{ url_for('Suppliers_Offers') }}">Purchases</a>
+                <a href="{{ url_for('Add_invoices') }}">RFQs</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Application</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Convert all text and textarea input fields to uppercase
+            document.querySelectorAll('input[type="text"], textarea').forEach(function(input) {
+                if (input.id !== 'email') {  // Exclude email field by ID
+                    input.addEventListener('input', function(event) {
+                        event.target.value = event.target.value.toUpperCase();
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>

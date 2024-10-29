@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>OmniPro Pvt Ltd</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap" rel="stylesheet">
+        <style>
+
+        </style>
+    </head>
+    <body class="sb-nav-fixed">
+                  {% include 'header.html'%}
+
+            <!-- <div id="layoutSidenav_content"> -->
+                <main>
+                 
+
+
+                    
+                            
+                                    <form action="{{ url_for('Suppliers') }}" method="POST" enctype="multipart/form-data">
+                                       
+                                    
+                                        <div id="dialog" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close">&times;</span>
+                                                <h2>Add New Supplier</h2>
+                                                <div id="supplierForm">
+                                                    <div class="form-row">
+                                                       
+                                                        
+                                                        <div class="form-group col-md-4">
+                                                            <label for="supplier_name"><b>Supplier Name:</b></label>
+                                                            <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="Enter supplier name" required onblur="checkSupplierName()">
+                                                            <!-- <small id="suppliernameHelp" class="form-text text-muted">Please enter a customer name with uppercase letters only.</small> -->
+                                                            <div id="nameError" class="text-danger"></div>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <label for="branch"><b>Supplier Type:</b></label>
+                                                            <button type="button" id="addBranch" data-toggle="modal" data-target="#branchModal" style="background-color: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                                                                +
+                                                            </button>
+                                                        
+                                                            <!-- Text input field for filtering branches -->
+                                                            <input type="text" id="branchFilter" class="form-control" placeholder="Enter Supplier Type" autocomplete="off" required>
+                                                        
+                                                            <!-- Dropdown for displaying filtered branches -->
+                                                            <ul id="branchList" class="list-group" style="position: absolute; z-index: 1000; display: none; max-height: 200px; overflow-y: auto; width: 100%; border: 1px solid #ccc; border-radius: 5px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                                                {% for branch in supplier_type %}
+                                                                <li class="list-group-item" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee;">{{ branch[1] }}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        
+                                                            <!-- Hidden select field for form submission -->
+                                                            <input type="hidden" id="sup_type" name="sup_type" value="" />
+                                                        </div>
+                                                        
+                                                        
+                                                        <div class="form-group col-md-4">
+                                                            <label for="contactnumber"><b>Contact Number:</b></label>
+                                                            <input type="text" id="contact_number" class="form-control" name="contact_number" maxlength="16">
+                                                            <!-- <small class="form-text text-muted"?>Please enter a 10-digit contact number using only digits (0-9).</small> -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        
+                                                        <div class="form-group col-md-4">
+                                                            <label for="contactfax"><b> Fax:</b></label>
+                                                            <input type="text" id="fax" class="form-control" name="fax" maxlength="16">
+                                                            <!-- <small class="form-text text-muted">Please enter up to 16 characters using only digits (0-9), plus (+), or minus (-).</small> -->
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="website"><b>Website</b></label>
+                                                            <input type="text" class="form-control" id="website" name="website">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="address"><b>Address:</b></label>
+                                                            <textarea class="form-control" id="address" name="address" placeholder="Enter address" rows="3"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="remarks"><b>Remarks:</b></label>
+                                                            <textarea class="form-control" id="remarks" name="remarks" placeholder="Enter remarks" rows="3"></textarea>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="application"><b>Focused Application:</b></label>
+                                                            <textarea class="form-control" id="applications" name="applications" rows="3"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="containerr">
+                                                        <h5>Add New Contact</h5>
+                                                        <table id="productTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Contact Person Name</th>
+                                                                    <th>Contact No</th>
+                                                                    <th>Email</th>
+                                                                    <th>Skype</th>
+                                                                    <th>Added by</th>
+                                                                    <th>Date</th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <!-- Initial row will be inserted here by JavaScript -->
+                                                            </tbody>
+                                                        </table>
+                                                        <button id="addRowBtn" type="button">+</button>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="file"><b>Upload Excel:</b></label>
+                                                            <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls">
+                                                        </div>
+                                                    </div>
+                                                    <a id="download_link" href="/uploads/supplier-contacts.xlsx">Download Sample File</a><br><br>
+                                                    <div class="form-row">
+                                                        <button type="submit" style="width: 5%;" class="btn btn-primary btn-sm">Submit</button><br>
+        
+                                                        <button type="button" style="width: 5%;margin-left:10px;" class="btn btn-secondary btn-sm" id="close_modal">Close</button>
+                                                </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                   
+                                    
+                                    
+                                
+                                        <div class="card mb-4">
+                                            <div class="card-header" style="padding: 5px 10px; height: 50px;">
+                                                <div class="d-flex justify-content-between align-items-center h-100">
+                                                    <!-- Left-side buttons (Add, Contacts, Export) -->
+                                                    <div class="d-flex align-items-center" style="gap: 10px;">
+                                                        <button id="addNewBtn" type="button" class="btn btn-primary" 
+                                                                style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                            <i class="fas fa-plus"></i> Add
+                                                        </button>
+                                                        <a href="{{ url_for('manage_customers') }}">
+                                                            <button type="button" class="btn btn-danger" 
+                                                                    style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                                Contacts
+                                                            </button>
+                                                        </a>
+                                                           
+                                                            <!-- Button to open the Add Contact Modal -->
+                                                                <button type="button" class="btn btn-info" style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;" data-toggle="modal" data-target="#addContactModal">
+                                                                   Import
+                                                                </button>
+  
+                                                        <a href="{{ url_for('export_suppliers_data') }}">
+                                                            <button type="button" class="btn btn-success" 
+                                                                    style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                                Export
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                    <h2 style="color: #20B2AA;"> SUPPLIERS</h2>
+                                                    <!-- Right-side Search form -->
+                                                    <div class="d-flex align-items-center">
+                                                        <form method="GET" action="{{ url_for('Suppliers') }}" class="d-flex align-items-center" enctype="multipart/form-data" style="gap: 5px;">
+                                                            <label for="search" class="mb-0" style="margin-right: 5px; font-size: 0.85rem;">Search:</label>
+                                                            <input type="text" id="search" name="search" value="{{ search_query }}" 
+                                                                   class="form-control form-control-sm" style="padding: 5px; font-size: 0.85rem; border-radius: 5px;">
+                                                            <button type="submit" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                                Search
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div class="table-responsive">
+                                               
+                                                <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Supplier Name</th>
+                                                            <th scope="col">Supplier Type</th>
+                                                            <th scope="col">Contact Number</th>
+                                                            <th scope="col">Fax</th>
+                                                            <th scope="col">Website</th>
+                                                            <th scope="col">Address</th>
+
+                                                            <th scope="col">Remarks</th>
+                                                            <th scope="col">Focused Applications</th>
+                                                            <!-- <th scope="col">Contact Person</th>
+                                                            <th scope="col">Contact Number</th>
+                                                            <th scope="col">Email</th>
+                                                            <th scope="col">Skype</th>
+                                                            <th scope="col">Added by</th> -->
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for record in suppliers %}
+                                                        <tr>
+                                                            <td>{{ (page - 1) * per_page + loop.index }}</td>
+                                                            <td>{{ record[1] }}</td>
+                                                            <td>{{ record[2] }}</td>
+                                                            <td>{{ record[3] }}</td>
+                                                            <td>{{ record[4] }}</td>
+                                                            <td>{{ record[5] }}</td>
+                                                            <td>{{ record[6] }}</td>
+                                                            <td>{{ record[7] }}</td>
+                                                            <td>{{ record[8] }}</td>
+                                                            <!-- <a href="/update_suppliers/{{ record[0] }}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modaledit{{ record[0] }}">Edit</a> -->
+
+                                                            <td>
+                                                              
+                                                                <a href="/update_suppliers/{{ record[0] }}" class="btn btn-warning btn-sm"
+                                                                data-toggle="modal" data-target="#modaledits{{ record[0] }}"
+                                                                style="position: relative; display: inline-block; cursor: pointer;"
+                                                                onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                                onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                                <i class="fas fa-edit"></i>
+                                                                <span class="tooltiptext" style="
+                                                                    visibility: hidden;
+                                                                    width: 120px;
+                                                                    background-color: black;
+                                                                    color: #fff;
+                                                                    text-align: center;
+                                                                    border-radius: 5px;
+                                                                    padding: 5px;
+                                                                    position: absolute;
+                                                                    z-index: 1;
+                                                                    bottom: 125%;
+                                                                    left: 50%;
+                                                                    margin-left: -60px;
+                                                                    opacity: 0;
+                                                                    transition: opacity 0.3s;
+                                                                ">Edit</span>
+                                                             </a>
+                                                                <!-- <a href="/delete_customers/{{ record[0] }}" onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger btn-sm">                    <i class="fas fa-trash-alt"></i>
+                                                                </a> -->
+                                                                <a href="/delete_suppliers/{{ record[0] }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete?')"
+                                                                
+                                                                style="position: relative; display: inline-block; cursor: pointer;"
+                                                                onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                                onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                                <span class="tooltiptext" style="
+                                                                    visibility: hidden;
+                                                                    width: 120px;
+                                                                    background-color: black;
+                                                                    color: #fff;
+                                                                    text-align: center;
+                                                                    border-radius: 5px;
+                                                                    padding: 5px;
+                                                                    position: absolute;
+                                                                    z-index: 1;
+                                                                    bottom: 125%;
+                                                                    left: 50%;
+                                                                    margin-left: -60px;
+                                                                    opacity: 0;
+                                                                    transition: opacity 0.3s;
+                                                                ">Delete</span>
+                                                             </a>
+                                                                <!-- <a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">+</a> -->
+                                                                <a href="/add_supplier_contacts/{{ record[0] }}" class="btn btn-primary btn-sm"
+                                                                data-toggle="modal" data-target="#modaledit{{ record[0] }}"
+                                                                style="position: relative; display: inline-block; cursor: pointer;"
+                                                                onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                                onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                                +
+                                                                <span class="tooltiptext" style="
+                                                                    visibility: hidden;
+                                                                    width: 120px;
+                                                                    background-color: black;
+                                                                    color: #fff;
+                                                                    text-align: center;
+                                                                    border-radius: 5px;
+                                                                    padding: 5px;
+                                                                    position: absolute;
+                                                                    z-index: 1;
+                                                                    bottom: 125%;
+                                                                    left: 50%;
+                                                                    margin-left: -60px;
+                                                                    opacity: 0;
+                                                                    transition: opacity 0.3s;
+                                                                ">Add Contact</span>
+                                                             </a>
+                                                             <a href="/add_supplier_excel/{{ record[0] }}" class="btn btn-success btn-sm"
+                                                                data-toggle="modal" data-target="#modalledit{{ record[0] }}"
+                                                                style="position: relative; display: inline-block; cursor: pointer;"
+                                                                onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                                onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                                <span class="material-symbols-outlined">
+                                                                    cloud_upload
+                                                                    </span>
+                                                                <span class="tooltiptext" style="
+                                                                    visibility: hidden;
+                                                                    width: 120px;
+                                                                    background-color: black;
+                                                                    color: #fff;
+                                                                    text-align: center;
+                                                                    border-radius: 5px;
+                                                                    padding: 5px;
+                                                                    position: absolute;
+                                                                    z-index: 1;
+                                                                    bottom: 125%;
+                                                                    left: 50%;
+                                                                    margin-left: -60px;
+                                                                    opacity: 0;
+                                                                    transition: opacity 0.3s;
+                                                                ">Import</span>
+                                                             </a>
+                                                                                                                         <!-- <a href="/add_customer_excel/{{ record[0] }}" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalledit{{ record[0] }}"><span class="material-symbols-outlined">
+                                                                                                                            cloud_upload
+                                                                                                                            </span></a> -->
+    
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                        <div class="modal fade" id="modaledit{{ record[0] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel"> Add Contact </h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                        
+                                                                        <form method="post" action="{{ url_for('add_supplier_contacts') }}" enctype="multipart/form-data" >
+                                                                            <div class="form-group">
+                                                                                <label for="modal-name"> Supplier Name</label>
+                                                                                <select class="form-control" id="suppliername" name="suppliername">
+                                                                                    {% for branch in suppliers %}
+                                                                                        <option value="{{ branch[1] }}" {% if branch[1] == record[1] %} selected {% endif %}>{{ branch[1] }}</option>
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="modal-email">Contact Person name</label>
+                                                                                <input type="text" class="form-control" id="contact_person" name="contact_person" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="modal-email">Contact Number</label>
+                                                                                <input type="number" class="form-control" id="contact_number" name="contact_number" >
+                                                                            </div>   
+                                                                           
+                                                                            
+                                                                            <div class="form-group">
+                                                                                <label for="modal-email">Email</label>
+                                                                                <input type="email" class="form-control" id="modal-email" name="email" >
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="modal-email">Skype</label>
+                                                                                <input type="text" class="form-control" id="skype" name="skype" >
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="modal-email">Added By</label>
+                                                                                <!-- <input type="text" class="form-control" id="addedby" name="addedby" > -->
+                                                                                <select class="form-control" id="addedby" name="addedby">
+                                                                                    {% for branch in employees %}
+                                                                                    <option value="{{ branch[1] }}">{{ branch[1] }}</option>
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="modal-email">Date</label>
+                                                                                <input type="date" class="form-control" id="date" name="date" >
+                                                                            </div>
+                                                                            <!-- <div class="form-group ">
+                                                                                <label for="file">Upload Excel:</label>
+                                                                                <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls">
+                                                                            </div> -->
+                                                        
+                                                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal fade" id="modalledit{{ record[0] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel"> Add Contact </h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                        
+                                                                        <form method="post" action="{{ url_for('add_supplier_excel') }}" enctype="multipart/form-data" >
+                                                                            <div class="form-group">
+                                                                                <label for="modal-name"> Supplier Name</label>
+                                                                                <select class="form-control" id="suppliername" name="suppliername">
+                                                                                    {% for branch in suppliers %}
+                                                                                        <option value="{{ branch[1] }}" {% if branch[1] == record[1] %} selected {% endif %}>{{ branch[1] }}</option>
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </div>
+                                                                            
+                                                                            <div class="form-group ">
+                                                                                <label for="file">Upload Excel:</label>
+                                                                                <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls">
+                                                                            </div>
+                                                                            <a id="download_links" href="{{ url_for('download_sample_excel_supp') }}" download>Download Sample File</a><br>
+                                                        
+                                                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+    
+                                                        
+                                                        <div id="modaledits{{ record[0] }}" class="modal fade" role="dialog">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Update Supplier</h4>
+                                                                        <span class="b" style="width: 30px; cursor: pointer; font-size: 24px; padding: 5px; display: inline-block; text-align: center;font-weight:bold;" data-dismiss="modal">x</span>
+
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form action="{{ url_for('update_suppliers') }}" method="POST">
+                                                                            <input type="hidden" name="id" value="{{ record[0] }}">
+                                                                            <div class="form-group">
+                                                                                <label>Supplier Name</label>
+                                                                                <input type="text" class="form-control" name="supplier_name" value="{{ record[1] }}" >
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Supplier Type</label>
+                                                                                <!-- <input type="text" class="form-control" name="sup_type" value="{{ record[2] }}" > -->
+                                                                                 
+                                                                                <select class="form-control" id="sup_type" name="sup_type">
+                                                                                    {% for branch in supp_type %}
+                                                                                        <option value="{{ branch[1] }}" {% if branch[1] == record[2] %} selected {% endif %}>{{ branch[1] }}</option>
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                                
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Contact Number</label>
+                                                                                <input type="text" class="form-control" name="contact_number" value="{{ record[3] }}" >
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Fax</label>
+                                                                                <input type="number" class="form-control" name="fax" value="{{ record[4] }}" >
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Website</label>
+                                                                                <input type="text" class="form-control" name="website" value="{{ record[5] }}" >
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Address</label>
+                                                                                <input type="text" class="form-control" name="address" value="{{ record[6] }}" >
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>remarks</label>
+                                                                                <input type="text" class="form-control" name="remarks" value="{{ record[7] }}" >
+                                                                            </div>
+                                                                           
+                                                                            <div class="form-group">
+                                                                                <label>applications</label>
+                                                                                <input type="text" class="form-control" name="applications" value="{{ record[8] }}" >
+                                                                            </div>
+                                                                            
+                                                                            
+                                                                           
+                                                                            
+                                                                            
+                                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                                        </form>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                        </div>
+                                    </div>
+                                  </form>
+                                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+                                    <!-- Display total rows -->
+                                    <!-- <div>
+                                        <p style="margin: 0; color: red;">Total rows: {{ total_entries }}</p>
+                                    </div> -->
+                                
+                                    <!-- Pagination controls -->
+                                    <ul class="pagination" style="display: flex; justify-content: flex-end; padding: 0; list-style-type: none; margin: 0;">
+                                        <!-- First Button -->
+                                        {% if page > 1 %}
+                                        <li style="margin-right: 5px;">
+                                            <a href="{{ url_for('Suppliers', page=1, search=search_query) }}" style="padding: 8px 12px; border: 1px solid #ccc; background-color: #f1f1f1; color: #007bff;">&laquo; First</a>
+                                        </li>
+                                        {% endif %}
+                                
+                                        <!-- Previous Button -->
+                                        {% if page > 1 %}
+                                        <li style="margin-right: 5px;">
+                                            <a href="{{ url_for('Suppliers', page=page-1, search=search_query) }}" style="padding: 8px 12px; border: 1px solid #ccc; background-color: #f1f1f1; color: #007bff;">&lsaquo; Previous</a>
+                                        </li>
+                                        {% endif %}
+                                
+                                        <!-- Next Button -->
+                                        {% if page < total_pages %}
+                                        <li style="margin-right: 5px;">
+                                            <a href="{{ url_for('Suppliers', page=page+1, search=search_query) }}" style="padding: 8px 12px; border: 1px solid #ccc; background-color: #f1f1f1; color: #007bff;">Next &rsaquo;</a>
+                                        </li>
+                                        {% endif %}
+                                
+                                        <!-- Last Button -->
+                                        {% if page < total_pages %}
+                                        <li style="margin-right: 5px;">
+                                            <a href="{{ url_for('Suppliers', page=total_pages, search=search_query) }}" style="padding: 8px 12px; border: 1px solid #ccc; background-color: #f1f1f1; color: #007bff;">Last &raquo;</a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+
+                        </main>
+
+
+
+<!-- Modal for adding a new contact -->
+<div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addContactModalLabel">Add Suppliers</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('add_new_supp') }}" enctype="multipart/form-data">
+                    <!-- Supplier Name Field -->
+                    <div class="form-group ">
+                        <label for="file">Upload Excel:</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls">
+                    </div>
+                    <a id="download_linkss" href="/uploads/add_suppliers.xlsx">Download Sample File</a><br><br>
+
+                    
+                   
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Get today's date in YYYY-MM-DD format
+    var today = new Date().toISOString().split('T')[0];
+    
+    // Set the max attribute to today's date
+    document.getElementById('date').setAttribute('max', today);
+</script>
+<script>
+    document.getElementById('addRowBtn').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the form from submitting
+    
+        // Create a new row
+        var table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow();
+    
+        // Insert cells and input fields into the new row
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);
+        var cell5 = newRow.insertCell(4);
+        var cell6 = newRow.insertCell(5);
+
+        var cell7 = newRow.insertCell(6);
+    
+        cell1.innerHTML = '<input type="text" name="contactpersonname[]" class="to-uppercase">';
+        cell2.innerHTML = '<input type="text" name="contactno[]" class="contact-number">';
+        cell3.innerHTML = '<input type="email" name="email[]">';
+        cell4.innerHTML = '<input type="text" name="skype[]" class="to-uppercase">';
+        var dropdown = document.createElement('select');
+        dropdown.name = 'addedby[]';
+        cell5.appendChild(dropdown);
+
+        // Fetch employee names from Flask and populate the dropdown
+        fetch('/get_employee_names')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(function(name) {
+                    var option = document.createElement('option');
+                    option.value = name;
+                    option.text = name;
+                    dropdown.add(option);
+                });
+            });     
+            
+
+            cell6.innerHTML = `<input type="date" name="date[]" max="${new Date().toISOString().split('T')[0]}">`;
+
+
+            
+
+
+            
+
+
+       cell7.innerHTML = '<button type="button" class="deleteRowBtn">x</button>';
+    
+        // Convert relevant inputs to uppercase
+        var inputs = newRow.querySelectorAll('.to-uppercase');
+        inputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+        });
+    
+        // Validate the contact number
+        var contactNumberInput = newRow.querySelector('.contact-number');
+        contactNumberInput.addEventListener('input', function() {
+            // Allow only numbers, +, and - symbols
+            this.value = this.value.replace(/[^0-9+\-]/g, '');
+    
+            // Limit the length to 16 characters
+            if (this.value.length > 16) {
+                this.value = this.value.slice(0, 16);
+            }
+        });
+    
+        // Validate the email (default behavior with no case change)
+        var emailInput = newRow.querySelector('input[type="email"]');
+        emailInput.addEventListener('input', function() {
+            var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(this.value)) {
+                this.setCustomValidity('Please enter a valid email address.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    });
+    
+    // Use event delegation to handle delete button clicks
+    document.getElementById('productTable').addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('deleteRowBtn')) {
+            if (confirm('Are you sure you want to remove this row?')) {
+                event.target.closest('tr').remove();
+            }
+        }
+    });
+    </script>
+    
+                       
+                        <script type="text/javascript">
+                            function convertSelectedOptionToUppercase(selectElement) {
+                                // Convert the selected option's text to uppercase
+                                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                                selectedOption.text = selectedOption.text.toUpperCase();
+                            }
+                        </script>
+                        <script>
+                            
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const addNewBtn = document.getElementById('addNewBtn');
+                                const modal = document.getElementById('dialog');
+                                const span = document.getElementsByClassName('close')[0];
+                                const form = document.getElementById('studentForm');
+                                const tableBody = document.querySelector('#studentTable tbody');
+                                const entriesSelect = document.getElementById('entriesSelect');
+                                const searchInput = document.getElementById('searchInput');
+                                const pagination = document.getElementById('pagination');
+                            
+                               
+                            
+                                
+                                addNewBtn.onclick = function() {
+                                    modal.style.display = 'block';
+                                }
+                            
+                                span.onclick = function() {
+                                    modal.style.display = 'none';
+                                }
+                            
+                                window.onclick = function(event) {
+                                    if (event.target == modal) {
+                                        modal.style.display = 'none';
+                                    }
+                                }
+    
+                                entriesSelect.addEventListener('change', function() {
+                                    entriesPerPage = parseInt(entriesSelect.value, 10);
+                                    currentPage = 1;
+                                    renderTable();
+                                });
+                            
+                                searchInput.addEventListener('input', function() {
+                                    currentPage = 1;
+                                    renderTable();
+                                });
+                            
+                                renderTable();
+                            });
+                        </script>
+                        <footer class="py-4 bg-light mt-auto">
+                            <div class="container-fluid">
+                                <div class="d-flex align-Items-center justify-content-between small">
+                                    <div class="text-muted">Copyright &copy; OmniPro Pvt Ltd</div>
+                                    <div>
+                                       
+                                        <a href="#">Terms &amp; Conditions
+                                            AeriesSofttechsolutions
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </footer>
+            <!-- </div> -->
+           
+            <div id="branchModal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Supplier Type</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" id="branchName" class="form-control" placeholder="Enter Supplier Type">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveBranch" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="sup_data" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Suppliers</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="file" id="sup_type" class="form-control" placeholder="Enter Supplier Type">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveBranch" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/chart-area-demo.js"></script>
+        <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/datatables-demo.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Set the active link on page load based on the current URL
+                var currentPath = window.location.pathname;
+                $('.sb-sidenav .nav-link').each(function() {
+                    var linkPath = $(this).attr('href');
+                    if (currentPath.indexOf(linkPath) !== -1) {
+                        $(this).addClass('active');
+                    }
+                });
+        
+                // Update the active link on click
+                $('.sb-sidenav .nav-link').on('click', function() {
+                    $('.sb-sidenav .nav-link').removeClass('active');
+                    $(this).addClass('active');
+                });
+            });
+        </script>
+    </body>
+
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Automatically convert the value of the input to uppercase
+        document.getElementById('supplier_name').addEventListener('input', function(event) {
+            var input = event.target;
+            input.value = input.value.toUpperCase();
+        });
+    });
+</script>
+<script>
+    document.getElementById('contact_number').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^0-9+-]/g, '');  // Allow digits, + and - symbols
+        if (this.value.length > 10) {
+            this.value = this.value.slice(0, 16);  // Enforce max length of 10 characters
+        }
+    });
+</script>
+<script>
+    document.getElementById('fax').addEventListener('input', function (e) {
+        // Remove all characters except digits, +, and -
+        this.value = this.value.replace(/[^0-9+-]/g, '');
+        
+        // Enforce a maximum length of 16 characters
+        if (this.value.length > 16) {
+            this.value = this.value.slice(0, 16);
+        }
+    });
+</script>
+<script>
+    document.getElementById('address').addEventListener('input', function(event) {
+        var textarea = event.target;
+        var value = textarea.value;
+
+        // Convert the entire value to uppercase
+        textarea.value = value.toUpperCase();
+    });
+</script>
+<script>
+    document.getElementById('remarks').addEventListener('input', function(event) {
+        var textarea = event.target;
+        var value = textarea.value;
+
+        // Convert the entire value to uppercase
+        textarea.value = value.toUpperCase();
+    });
+</script>
+<script>
+    document.getElementById('application').addEventListener('input', function(event) {
+        var textarea = event.target;
+        var value = textarea.value;
+
+        // Convert the entire value to uppercase
+        textarea.value = value.toUpperCase();
+    });
+</script>
+<script>
+    // Get the modal
+    var modal = document.getElementById('dialog');
+
+    // Get the close button element
+    var closeBtn = document.getElementById('close_modal');
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName('close')[0];
+
+    // When the user clicks the close button, close the modal
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script><script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    <div style="display: none;">
+        {% for category, message in messages %}
+            <div class="flash-message">{{ message|escape }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the flash messages from the document
+        var flashMessages = document.querySelectorAll('.flash-message');
+
+        // Loop through all flash messages and show them as alerts
+        flashMessages.forEach(function(element) {
+            alert(element.textContent);
+        });
+    });
+</script>
+<script>
+    function checkSupplierName(event) {
+var supplier_name = document.getElementById('supplier_name').value;
+if (supplier_name) {
+var xhr = new XMLHttpRequest();
+xhr.open('POST', '/check_supplier_name', true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.onload = function () {
+    if (xhr.status === 200) {
+        var response = JSON.parse(xhr.responseText);
+        var nameError = document.getElementById('nameError');
+        var suppliernameHelp = document.getElementById('suppliernameHelp');
+        if (response.exists) {
+            nameError.textContent = 'Supplier name already exists. Please choose a different name.';
+            suppliernameHelp.style.display = 'none';
+            event.preventDefault(); // Prevent form submission
+        } else {
+            nameError.textContent = '';
+            suppliernameHelp.style.display = 'block';
+        }
+    }
+};
+xhr.send('supplier_name=' + encodeURIComponent(supplier_name));
+}
+}
+
+// Attach the checkEmployeeName function to the form submit event
+document.getElementById('supplierForm').addEventListener('submit', function(event) {
+checkSupplierName(event);
+});
+
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var filePath = '/download/supplier-contacts.xlsx'; // Path to your download route
+        var downloadLink = document.getElementById('download_link');
+        
+        // Set the href attribute to the file path
+        downloadLink.href = filePath;
+        downloadLink.download = 'sample_file.xlsx'; // Optional: specify the filename for the download
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var filePath = '/download/supplier-contacts.xlsx'; // Path to your download route
+        var downloadLink = document.getElementById('download_links');
+        
+        // Set the href attribute to the file path
+        downloadLink.href = filePath;
+        downloadLink.download = 'sample_file.xlsx'; // Optional: specify the filename for the download
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var filePath = '/download/add_suppliers.xlsx'; // Path to your download route
+        var downloadLink = document.getElementById('download_linkss');
+        
+        // Set the href attribute to the file path
+        downloadLink.href = filePath;
+        downloadLink.download = 'sample_file.xlsx'; // Optional: specify the filename for the download
+    });
+
+</script>
+<script>
+    // Convert input to uppercase
+    const branchNameInput = document.getElementById('branchName');
+    branchNameInput.addEventListener('input', () => {
+        branchNameInput.value = branchNameInput.value.toUpperCase();
+    });
+
+    // Function to check if a branch already exists in the dropdown and list
+    function branchExists(branchName) {
+        var branchOptions = document.querySelectorAll('#sup_type option');
+        for (var option of branchOptions) {
+            if (option.value.toUpperCase() === branchName.toUpperCase()) {
+                return true;
+            }
+        }
+        var branchItems = document.querySelectorAll('#branchList li');
+        for (var item of branchItems) {
+            if (item.textContent.toUpperCase() === branchName.toUpperCase()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Handle saving a new branch
+    document.getElementById('saveBranch').addEventListener('click', function () {
+        var branchName = document.getElementById('branchName').value;
+
+        if (branchName) {
+            if (branchExists(branchName)) {
+                alert('This supplier type already exists.');
+                return; // Prevent further action
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/add_supplier_type', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        // Add the new branch to the hidden input field
+                        document.getElementById('sup_type').value = response.branch_name;
+
+                        // Add the new branch to the filter list
+                        var branchList = document.getElementById('branchList');
+                        var newListItem = document.createElement("li");
+                        newListItem.className = "list-group-item";
+                        newListItem.textContent = response.branch_name;
+                        newListItem.style.cursor = "pointer";
+                        newListItem.style.padding = "10px";
+                        newListItem.style.borderBottom = "1px solid #eee";
+                        branchList.appendChild(newListItem);
+
+                        // Clear the input and hide the modal
+                        document.getElementById('branchName').value = ''; 
+                        $('#branchModal').modal('hide'); // Hide the modal
+                    }
+                } else {
+                    console.error('Error adding supplier type:', xhr.responseText);
+                }
+            };
+            xhr.send('branchName=' + encodeURIComponent(branchName));
+        } else {
+            alert('Please enter a supplier type');
+        }
+    });
+
+    // JavaScript to filter supplier types based on input
+    document.getElementById('branchFilter').addEventListener('input', function() {
+        var filter = this.value.toLowerCase();
+        var list = document.getElementById('branchList');
+        var items = list.getElementsByTagName('li');
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var option = item.textContent.toLowerCase();
+
+            if (option.startsWith(filter)) {
+                item.style.display = ''; // Show item
+            } else {
+                item.style.display = 'none'; // Hide item
+            }
+        }
+
+        // Show the list if there's input; otherwise, show all items
+        if (filter === '') {
+            for (var i = 0; i < items.length; i++) {
+                items[i].style.display = ''; // Show all items
+            }
+        }
+    });
+
+    // Handle click on a supplier type item
+    document.getElementById('branchList').addEventListener('click', function(e) {
+        if (e.target.tagName === 'LI') {
+            document.getElementById('branchFilter').value = e.target.textContent;
+            document.getElementById('sup_type').value = e.target.textContent; // Set the value of the hidden input field
+            this.style.display = 'none'; // Hide the list after selection
+        }
+    });
+
+    // Close the dropdown if clicked outside
+    document.addEventListener('click', function(e) {
+        var list = document.getElementById('branchList');
+        var filter = document.getElementById('branchFilter');
+
+        if (!filter.contains(e.target) && !list.contains(e.target)) {
+            list.style.display = 'none';
+        }
+    });
+
+    // Show the list when the input field is focused
+    document.getElementById('branchFilter').addEventListener('focus', function() {
+        document.getElementById('branchList').style.display = 'block';
+    });
+</script>
+<script>
+    document.getElementById('addNewContactBtn').addEventListener('click', function() {
+        var addContactModal = new bootstrap.Modal(document.getElementById('addContactModal'));
+        addContactModal.show();
+    });
+</script>
+
+
+
+
+
+
+{% extends "uppercase.html" %}

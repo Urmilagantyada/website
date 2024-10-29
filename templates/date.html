@@ -1,0 +1,21 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set max date on existing date fields
+        var maxDate = new Date().toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+        document.querySelectorAll('input[type="date"]').forEach(function(dateField) {
+            dateField.setAttribute('max', maxDate);
+        });
+    
+        // If you are dynamically adding rows, ensure the max date is applied to new rows
+        document.getElementById('addRowBtn').addEventListener('click', function() {
+            setTimeout(function() {
+                document.querySelectorAll('input[type="date"]').forEach(function(dateField) {
+                    dateField.setAttribute('max', maxDate);
+                });
+            }, 100); // Timeout to allow new row to be added to DOM
+        });
+    });
+    
+
+
+</script>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>VIJAYA MEDICALS</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap" rel="stylesheet">
+
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-info">
+            <img src="https://hydromo.in/wp-content/uploads/2021/11/24.jpg" width="200px" height="70px">
+            <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0" action="{{url_for('index')}}">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <li class="nav-Item dropdown">
+                    <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-Item" href="#">Settings</a>
+                        <a class="dropdown-Item" href="#">Activity Log</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-Item" href="login.html">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-white" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                           
+                            <a class="nav-link" href="{{url_for('technician_dashboard')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                            <!-- <div class="sb-sidenav-menu-heading">Interface</div>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Layouts
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="layout-static.html">Static Navigation</a>
+                                    <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
+                                </nav>
+                            </div> -->
+                            
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                Pages
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                                        Authentication
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <a class="nav-link" href="password.html">Forgot Password</a>
+                                    <a class="nav-link" href="register.html">Register</a>
+                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                        <nav class="sb-sidenav-menu-nested nav">
+                                            <a class="nav-link" href="login.html">Login</a>
+                                            <a class="nav-link" href="register.html">Register</a>
+                                            <a class="nav-link" href="password.html">Forgot Password</a>
+                                        </nav>
+                                    </div>
+                                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                        Error
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                        <nav class="sb-sidenav-menu-nested nav">
+                                            <a class="nav-link" href="401.html">401 Page</a>
+                                            <a class="nav-link" href="404.html">404 Page</a>
+                                            <a class="nav-link" href="500.html">500 Page</a>
+                                        </nav>
+                                    </div>
+                                </nav>
+                            </div> -->
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsestaff" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                              Users
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsestaff" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('Customers')}}">  Add User</a>
+                                    <a class="nav-link" href="{{ url_for('manage_staff')}}">Manage User</a>
+
+                                </nav>
+                            </div>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapscourse" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-list" aria-hidden="true"></i></div>
+                                Tests
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapscourse" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('Suppliers')}}">  Add Tests</a>
+                                    <a class="nav-link" href="{{ url_for('manage_courses')}}">Manage Tests</a>
+
+                                </nav>
+                            </div>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsecollege" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-cog" aria-hidden="true"></i></div>
+                                Referring Doctor
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsecollege" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('Manfactured')}}">  Assign tests </a>
+                                    <a class="nav-link" href="{{ url_for('manage_colleges')}}">Manage </a>
+
+                                </nav>
+                            </div> -->
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsecalling" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-industry" aria-hidden="true"></i></div>
+                                Patient Results Data
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsecalling" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('Item') }}">Add New Data</a>
+                                    <a class="nav-link" href="{{ url_for('manage_calling_data') }}">Manage Data</a>
+                                    <!-- <a class="nav-link" href="{{ url_for('Supplier_Po') }}">Import Data</a> -->
+
+                                </nav>
+                            </div>
+
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapselead" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                                Reports
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapselead" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('RFQ') }}">  View Reports</a>
+                                    <a class="nav-link" href="{{ url_for('Supplier_RFQ') }}">Manage Reports</a>
+                                    <a class="nav-link" href="{{ url_for('bulk_watsapp') }}">Authorized Reports</a>
+
+                                </nav>
+                            </div> -->
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsereg" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-file" aria-hidden="true"></i></div>
+                               Patient Registration
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsereg" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('CustomerQuotation')}}">Add Patient </a>
+                                    <a class="nav-link" href="{{ url_for('SupplierQuotation')}}">Manage Patient </a>
+
+                                </nav>
+                            </div> -->
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLeadsstatus" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fa fa-list" aria-hidden="true"></i></div>
+                                Lead Status
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLeadsstatus" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ url_for('CrossRefPart')}}">New</a>
+                                    <a class="nav-link" href="{{ url_for('Suppliers_Offers')}}">Working</a>
+                                    <a class="nav-link" href="{{ url_for('SupplierInvoice')}}">Contacted</a>
+                                    <a class="nav-link" href="{{ url_for('PartNo')}}">Qualified</a>
+                                    <a class="nav-link" href="{{ url_for('Customer_Po')}}">Failed</a>
+                                    <a class="nav-link" href="{{ url_for('CustomerInvoice')}}">Closed</a>
+                                    
+                                </nav>
+                            </div> -->
+             
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsecollege" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-cog" aria-hidden="true"></i></div>
+                                Credits
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsecollege" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('Manfactured')}}"> View Credits</a>
+                                    <a class="nav-link" href="{{ url_for('manage_colleges')}}">Manage Credits</a>
+
+                                </nav>
+                            </div> -->
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapselead" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                                Results
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapselead" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('RFQ') }}">  View Results</a>
+                                    <a class="nav-link" href="{{ url_for('Supplier_RFQ') }}">Manage Results</a>
+                                </nav>
+                            </div> -->
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseinvoice" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fa fa-file" aria-hidden="true"></i></div>
+                                Invoices
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseinvoice" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+
+                                    <a class="nav-link" href="{{ url_for('Add_invoices')}}">  Add Invoices</a>
+                                    <a class="nav-link" href="{{ url_for('manage_invoices')}}">Manage Invoices</a> -->
+
+                                <!-- </nav> -->
+                            <!-- </div> -->
+                            
+                            
+                            
+                           
+                            
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                       Vijaya Medicals
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid">
+                        <h5 class="mt-4 Dashboard" style="font-family: 'Lora', serif; font-size: 2.5em; color: #333; text-align: center; margin-top: 4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);"> Patient Data Management System</h5>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-Item active ">Dashboard</li>
+                        </ol>
+                        <h5>Welcome to Vijaya Medicals</h5>
+                        <!-- <div class="row">
+                            <div class="col-xl-3 col-md-4  text-center">
+                                <div class="card bg-info text-white mb-4">
+                                    <div class="card-body">Welcome,Reception</div>
+                                    <p> {{ colleges_count }}</p>                                    
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="{{ url_for('manage_colleges')}}">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!-- <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body">Total Data</div>
+                                    <p class="card-text ">5</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            
+                            <!-- <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Total Invoice</div>
+                                    <p>{{invoice_count}}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="{{ url_for('manage_invoices')}}">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-info text-white mb-4">
+                                    <div class="card-body">Total Leads</div>
+                                    <p>{{ lead_count }}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="{{ url_for('Supplier_RFQ') }}">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-warning text-white mb-4">
+                                   <div class="card-body">Total New Leads</div>
+                                    <p>{{new_count}}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Total Working Leads</div>
+                                    <p>{{working_count}}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-info text-white mb-4">
+                                    <div class="card-body">Total Contacted Leads</div>
+                                    <p>{{contacted_count}}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!-- <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-secondary text-white mb-4">
+                                    <div class="card-body">Total Qualified Leads</div>
+                                    <p>{{qualified_count}}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body">Total Failed Leads</div>
+                                    <p>{{failed_count}}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!-- <div class="col-xl-3 col-md-4 text-center">
+                                <div class="card bg-success text-white mb-4">
+                                  <div class="card-body">Total Closed Leads</div>
+                                    <p>{{closed_count}}</p>
+                                    <div class="card-footer d-flex align-Items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+        
+            
+                                                        
+                       
+        
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-Items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Vijaya Medicals</div>
+                            <div>
+                                
+                                <a href="#">Aeries Soft Tech Solution </a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/chart-area-demo.js"></script>
+        <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/datatables-demo.js"></script>
+        
+        </script>
+    </body>
+</html>

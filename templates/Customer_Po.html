@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>OmniPro Systems Pvt Ltd</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap" rel="stylesheet">
+        <style>
+
+        </style>
+    </head>
+    <body class="sb-nav-fixed">
+        {%include "header.html"%}
+
+                <main>
+                    
+                    
+                                    <form action="{{url_for('Customer_Po')}}" method="POST" enctype="multipart/form-data">
+                                       
+                                    <div id="dialog" class="modal">
+                                        <div class="modal-content">
+                                            <span class="close">&times;</span>
+                                            <h6>Add New Customer P.O</h6>
+                                            <form id="studentForm" enctype="multipart/form-data" method="POST">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="PO_Date"><b>P.O Date:</b></label>
+                                                        <input type="date" class="form-control" id="PO_Date" name="PO_Date" required>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="PO_No"><b>P.O No:</b></label>
+                                                        <input type="text" class="form-control" id="PO_No" name="PO_No" required>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="PO_Recd_Date"><b>P.O Recd Date:</b></label>
+                                                        <input type="date" class="form-control" id="PO_Recd_Date" name="PO_Recd_Date" >
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="customername"><b>Customer Name:</b></label>
+                                                        <select class="form-control" id="customername" name="customer_name">
+                                                            <option value="" disabled selected>Select Customer</option>
+                                                            {% for customer in customers %}
+                                                            <option value="{{ customer[0] }}">{{ customer[0] }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="Total_PO_Value"><b>Total P.O Value:</b></label>
+                                                        <input type="text" class="form-control" id="Total_PO_Value" name="Total_PO_Value" placeholder="Enter Total P.O Value" >
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="No_of_Items_in_PO"><b>No of Items in P.O:</b></label>
+                                                        <select class="form-control" id="No_of_Items_in_PO" name="No_of_Items_in_PO" >
+                                                            <option value="">Select No of Items</option>
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
+                                                            <option value="3">3</option>
+                                                            <option value="4">4</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="PO_Delivery_Date"><b>P.O Delivery Date:</b></label>
+                                                        <input type="date" class="form-control" id="PO_Delivery_Date" name="PO_Delivery_Date" >
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="Employee_Name"><b>Employee Name:</b></label>
+                                                        <select class="form-control" id="Employee_Name" name="Employee_Name" onchange="convertSelectedOptionToUppercase(this)">
+                                                            <option value="" disabled selected>Select Employee</option>
+                                                            {% for customer in employee %}
+                                                            <option value="{{ customer[0] }}">{{ customer[0] }}</option>
+                                                            {% endfor %}
+                                                            <!-- Add more options as needed -->
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+
+                                                
+
+
+                                               
+
+
+
+
+
+
+
+
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="customercontact"><b>Customer Contact:</b></label>
+                                                        <select class="form-control" id="customercontact" name="customercontact">
+                                                            <option value="">--Select Customer Contact--</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div class="form-group col-md-3">
+                                                        <label for="PO_Remarks"><b>P.O Remarks:</b></label>
+                                                        <textarea class="form-control" id="PO_Remarks" name="PO_Remarks" placeholder="Enter PO Remarks" rows="3"></textarea>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="PO_Notes"><b>P.O Notes:</b></label>
+                                                        <textarea class="form-control" id="PO_Notes" name="PO_Notes" placeholder="Enter PO Notes" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="containerr">
+                                                    <h5>Add P.O Items</h5>
+                                                    <table id="productTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>P.O_part_no</th>
+                                                                <th>MFR</th>
+                                                                <th>P.O Qty</th>
+                                                                <th>P.O U/P</th>
+                                                                <th>P.O Item Value</th>
+                                                                <th>P.O Ship Qty</th>
+                                                                <th>P.O Balance Qty</th>
+                                                                <th>P.O Item Delivery Date</th>
+                                                                <th>Freight Charges</th>
+                                                                <th>Other Charges</th>
+                                                                <th>Item Status</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <!-- Rows will be added dynamically via JavaScript -->
+                                                        </tbody>
+                                                    </table>
+                                                    <button id="addRowBtn">+</button>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="total_Remarks"><b>Total Remarks:</b></label>
+                                                        <textarea class="form-control" id="total_Remarks" name="total_Remarks" placeholder="Enter total_Remarks" rows="2"></textarea>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="file"><b>Upload Excel:</b></label>
+                                                        <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls"><br>
+                                                        <a id="download_link" href="/uploads/manfactured.xlsx">Download Sample File</a><br><br>
+    
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn11 btn-primary borde">Submit</button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    
+                                    <script>
+                                        document.getElementById('addRowBtn').addEventListener('click', function(event) {
+                                            event.preventDefault();
+                                        
+                                            var table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+                                            var newRow = table.insertRow();
+                                        
+                                            var cell1 = newRow.insertCell(0);
+                                            var cell2 = newRow.insertCell(1);
+                                            var cell3 = newRow.insertCell(2);
+                                            var cell4 = newRow.insertCell(3);
+                                            var cell5 = newRow.insertCell(4);
+                                            var cell6 = newRow.insertCell(5);
+                                            var cell7 = newRow.insertCell(6);
+                                            var cell8 = newRow.insertCell(7);
+                                            var cell9 = newRow.insertCell(8);
+                                            var cell10 = newRow.insertCell(9);
+                                            var cell11 = newRow.insertCell(10);
+                                            var cell12 = newRow.insertCell(11);
+
+                                            cell1.innerHTML = '<select name="PO_part_no[]" required></select>';
+                                            cell2.innerHTML = '<input type="text" name="MFR[]">';
+                                            cell3.innerHTML = '<input type="text" name="PO_Quantity[]">';
+                                            cell4.innerHTML = '<input type="text" name="PO_U_P[]">';
+                                            cell5.innerHTML = '<input type="text" name="PO_Item_Value[]">';
+                                            cell6.innerHTML = '<input type="text" name="PO_Ship_Qty[]">';
+                                            cell7.innerHTML = '<input type="text" name="PO_Balance_Qty[]">';
+                                            cell8.innerHTML = '<input type="date" name="PO_Item_Delivery_Date[]" max="' + new Date().toISOString().split('T')[0] + '">';        
+                                            cell9.innerHTML = '<input type="text" name="Freight_Charges[]">';
+                                            cell10.innerHTML = '<input type="text" name="Other_Charges[]">';
+                                            cell11.innerHTML = '<input type="text" name="Item_Status[]">';
+                                            cell12.innerHTML = '<button type="button" class="deleteRowBtn">x</button>';
+                                            
+                                            fetch('/get_part_no')
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                const dropdownPartNo = cell1.querySelector('select');
+                                                data.forEach(partNo => {
+                                                    const option = document.createElement('option');
+                                                    option.value = partNo;
+                                                    option.text = partNo;
+                                                    dropdownPartNo.add(option);
+                                                });
+                                            });
+                                        
+                                            var deleteButtons = document.getElementsByClassName('deleteRowBtn');
+                                            for (var i = 0; i < deleteButtons.length; i++) {
+                                                deleteButtons[i].addEventListener('click', function() {
+                                                    this.parentElement.parentElement.remove();
+                                                });
+                                            }
+                                        });
+                                        
+                                        </script>
+                                        
+                                
+                                    <div class="card mb-4">
+                                        <div class="card-header" style="padding: 5px 10px; height: 50px;">
+                                            <div class="d-flex justify-content-between align-items-center h-100">
+                                                <!-- Left-side buttons (Add, Contacts, Export) -->
+                                                <div class="d-flex align-items-center" style="gap: 10px;">
+                                                    <button id="addNewBtn" type="button" class="btn btn-primary" 
+                                                            style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                        <i class="fas fa-plus"></i> Add
+                                                    </button>
+                                                    <a href="{{ url_for('manage_purchase') }}">
+                                                        <button type="button" class="btn btn-danger" 
+                                                                style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                            Purchase Order Items
+                                                        </button>
+                                                    </a>
+                                                    <a href="{{ url_for('export_data') }}">
+                                                        <button type="button" class="btn btn-success" 
+                                                                style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                            Export
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                                <h2 style="color: #20B2AA;"> CUSTOMER PURCHASE ORDER</h2>
+                                                <!-- Right-side Search form -->
+                                                <div class="d-flex align-items-center">
+                                                    <form method="GET" action="{{ url_for('Customer_Po') }}" class="d-flex align-items-center" enctype="multipart/form-data" style="gap: 5px;">
+                                                        <label for="search" class="mb-0" style="margin-right: 5px; font-size: 0.85rem;">Search:</label>
+                                                        <input type="text" id="search" name="search" value="{{ search_query }}" 
+                                                               class="form-control form-control-sm" style="padding: 5px; font-size: 0.85rem; border-radius: 5px;">
+                                                        <button type="submit" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                                            Search
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">P.O Date</th>
+                                                            <th scope="col">P.O No</th>
+                                                            <th scope="col">P.O Recd Date</th>
+                                                            <th scope="col">Customer Name</th>
+                                                            <th scope="col">Total P.O Value</th>
+                                                            <th scope="col">No of Items in P.O</th>
+                                                            <th scope="col">P.O Delivery Date</th>
+                                                            <th scope="col">Employee Name</th>
+                                                            <th scope="col">Customer Contact</th>
+                                                            
+                                                            <th scope="col">P.O Remarks</th>
+                                                            <th scope="col">P.O Notes</th>
+                                                            <th scope="col">Total Remarks</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for record in purchase_cus %}
+                                                        <tr>
+                                                            <td>{{ loop.index }}</td>
+                                                            <td>{{ record[1] }}</td>
+                                                            <td>{{ record[2] }}</td>
+                                                            <td>{{ record[3] }}</td>
+                                                            <td>{{ record[4] }}</td>
+                                                            <td>{{ record[5] }}</td>
+                                                            <td>{{ record[6] }}</td>
+                                                            <td>{{ record[7] }}</td>
+                                                            <td>{{ record[8] }}</td>
+                                                            <td>{{ record[9] }}</td>
+                                                            <td>{{ record[10] }}</td>
+                                                            <td>{{ record[11] }}</td>
+                                                            <td>{{ record[12] }}</td>
+                                                            
+                                                           
+                                                            <td>
+                                                                <!-- <a href="/update_customerpo/{{record.0}}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modaledit{{record.0}}">Edit</a>
+                                                                <a href="/delete_customerpo/{{ record.0 }}" onclick="return confirm('Are Sure Want To Deleted ?')" class="btn btn-danger btn-sm">Delete</a> -->
+
+                                                                <a href="/update_customerpo/{{record.0}}" class="btn btn-warning btn-sm"
+                                            data-toggle="modal" data-target="#modaledit_update{{record.0}}"
+                                            style="position: relative; display: inline-block; cursor: pointer;"
+                                            onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                            onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                            <i class="fas fa-edit"></i>
+                                            <span class="tooltiptext" style="
+                                                visibility: hidden;
+                                                width: 100px;
+                                                background-color: black;
+                                                color: #fff;
+                                                text-align: center;
+                                                border-radius: 5px;
+                                                padding: 5px;
+                                                position: absolute;
+                                                z-index: 1;
+                                                bottom: 125%;
+                                                left: 50%;
+                                                margin-left: -50px;
+                                                opacity: 0;
+                                                transition: opacity 0.3s;
+                                            ">Edit</span>
+                                         </a>
+                                         
+                                         <!-- Delete Button -->
+                                         <a href="/delete_customerpo/{{ record.0 }}" onclick="return confirm('Are you sure you want to delete?');" class="btn btn-danger btn-sm"
+                                            style="position: relative; display: inline-block; cursor: pointer;"
+                                            onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                            onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                            <i class="fas fa-trash-alt"></i>
+                                            <span class="tooltiptext" style="
+                                                visibility: hidden;
+                                                width: 100px;
+                                                background-color: black;
+                                                color: #fff;
+                                                text-align: center;
+                                                border-radius: 5px;
+                                                padding: 5px;
+                                                position: absolute;
+                                                z-index: 1;
+                                                bottom: 125%;
+                                                left: 50%;
+                                                margin-left: -50px;
+                                                opacity: 0;
+                                                transition: opacity 0.3s;
+                                            ">Delete</span>
+                                         </a>
+
+                                            <a href="/add_customer_po/{{ record[0] }}" class="btn btn-primary btn-sm"
+                                                                data-toggle="modal" data-target="#modaledit{{ record[0] }}"
+                                                                style="position: relative; display: inline-block; cursor: pointer;"
+                                                                onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                                onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                                +
+                                                                <span class="tooltiptext" style="
+                                                                    visibility: hidden;
+                                                                    width: 120px;
+                                                                    background-color: black;
+                                                                    color: #fff;
+                                                                    text-align: center;
+                                                                    border-radius: 5px;
+                                                                    padding: 5px;
+                                                                    position: absolute;
+                                                                    z-index: 1;
+                                                                    bottom: 125%;
+                                                                    left: 50%;
+                                                                    margin-left: -60px;
+                                                                    opacity: 0;
+                                                                    transition: opacity 0.3s;
+                                                                ">Add Customer_Po</span>
+                                                             </a>
+                                                             <a href="/add_customer_po_excel/{{ record[0] }}" class="btn btn-success btn-sm"
+                                                             data-toggle="modal" data-target="#modalledit{{ record[0] }}"
+                                                             style="position: relative; display: inline-block; cursor: pointer;"
+                                                             onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                             onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                             <span class="material-symbols-outlined">
+                                                                 cloud_upload
+                                                                 </span>
+                                                             <span class="tooltiptext" style="
+                                                                 visibility: hidden;
+                                                                 width: 120px;
+                                                                 background-color: black;
+                                                                 color: #fff;
+                                                                 text-align: center;
+                                                                 border-radius: 5px;
+                                                                 padding: 5px;
+                                                                 position: absolute;
+                                                                 z-index: 1;
+                                                                 bottom: 125%;
+                                                                 left: 50%;
+                                                                 margin-left: -60px;
+                                                                 opacity: 0;
+                                                                 transition: opacity 0.3s;
+                                                             ">Import</span>
+                                                          </a>
+                                                        
+            
+                                                            </td>
+                                                       </tr>
+
+                                                       <div class="modal fade" id="modaledit{{ record[0] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Add Customer PO</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form method="post" action="{{ url_for('add_customer_po') }}" enctype="multipart/form-data">
+                                                                        <div class="form-group">
+                                                                            <label for="modal-name">Customer PO Number</label>
+                                                                            <select class="form-control" id="PO_No" name="PO_No">
+                                                                                {% for branch in purchase_cus %}
+                                                                                    <option value="{{ branch[2] }}" {% if branch[2] == record[2] %} selected {% endif %}>{{ branch[2] }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                    
+                                                                        <div id="item-fields">
+                                                                            <div class="form-group">
+                                                                                <label for="part_no">Manufactured Part No</label>
+                                                                                <select class="form-control" id="part_no" name="part_no[]">
+                                                                                    {% for branch in part_item %}
+                                                                                        <option value="{{ branch[0] }}">{{ branch[0] }}</option>
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="MFR">MFR</label>
+                                                                                <input type="text" class="form-control" id="MFR" name="MFR[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="PO_Quantity">PO Quantity</label>
+                                                                                <input type="number" class="form-control" id="PO_Quantity" name="PO_Quantity[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="PO_U_P">PO U_P</label>
+                                                                                <input type="number" class="form-control" id="PO_U_P" name="PO_U_P[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="PO_Item_Value">PO Item Value</label>
+                                                                                <input type="number" class="form-control" id="PO_Item_Value" name="PO_Item_Value[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="PO_Ship_Qty">PO Ship Qty</label>
+                                                                                <input type="number" class="form-control" id="PO_Ship_Qty" name="PO_Ship_Qty[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="PO_Balance_Qty">PO Balance Qty</label>
+                                                                                <input type="number" class="form-control" id="PO_Balance_Qty" name="PO_Balance_Qty[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="PO_Item_Delivery_Date">PO Item Delivery Date</label>
+                                                                                <input type="date" class="form-control" id="PO_Item_Delivery_Date" name="PO_Item_Delivery_Date[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="Freight_Charges">Freight Charges</label>
+                                                                                <input type="number" class="form-control" id="Freight_Charges" name="Freight_Charges[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="Other_Charges">Other Charges</label>
+                                                                                <input type="text" class="form-control" id="Other_Charges" name="Other_Charges[]" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="Item_Status">Item Status</label>
+                                                                                <input type="text" class="form-control" id="Item_Status" name="Item_Status[]" required>
+                                                                            </div>
+                                                                        </div>
+                                                    
+                                                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    
+
+                                                    <div class="modal fade" id="modalledit{{ record[0] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel"> Add Customer_PO Item </h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form method="post" action="{{ url_for('add_customer_po_excel') }}" enctype="multipart/form-data">
+                                                                        <div class="form-group">
+                                                                            <label for="modal-name">Customer PO Number</label>
+                                                                            <select class="form-control" id="PO_No" name="PO_No">
+                                                                                {% for branch in purchase_cus %}
+                                                                                    <option value="{{ branch[2] }}" {% if branch[2] == record[2] %} selected {% endif %}>{{ branch[2] }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                        
+                                                                        <div class="form-group ">
+                                                                            <label for="file">Upload Excel:</label>
+                                                                            <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls">
+                                                                        </div>
+                                                                        <a id="download_links" href="{{ url_for('download_sample_excel_opportunity_rfq') }}" download>Download Sample File</a><br>
+                                                    
+                                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    
+                                        
+                                                       <div id="modaledit_update{{ record[0] }}" class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">Update Customer P.O</h4>
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form action="{{ url_for('update_customerpo') }}" method="POST">
+                                                                        <input type="hidden" name="id" value="{{ record[0] }}">
+                                                                        <div class="form-group">
+                                                                            <label>PO Date</label>
+                                                                            <input type="date" class="form-control" name="PO_Date" value="{{ record[1] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>PO No</label>
+                                                                            <input type="number" class="form-control" name="PO_No" value="{{ record[2] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>PO Recd Date</label>
+                                                                            <input type="date" class="form-control" name="PO_Recd_Date" value="{{ record[3] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Customer Name</label>
+                                                                            <input type="text" class="form-control" name="Customer_Name" value="{{ record[4] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Total P.O Value</label>
+                                                                            <input type="text" class="form-control" name="Total_PO_Value" value="{{ record[5] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>No of Items in P.O</label>
+                                                                            <input type="number" class="form-control" name="No_of_Items_in_PO" value="{{ record[6] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>P.O Delivery Date</label>
+                                                                            <input type="date" class="form-control" name="PO_Delivery_Date" value="{{ record[7] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Employee Name</label>
+                                                                            <input type="text" class="form-control" name="Employee_Name" value="{{ record[8] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Customer Contact</label>
+                                                                            <input type="text" class="form-control" name="Customer_Contact" value="{{ record[9] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>P.O Remarks</label>
+                                                                            <input type="text" class="form-control" name="PO_Remarks" value="{{ record[11] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>P.O Notes</label>
+                                                                            <input type="text" class="form-control" name="PO_Notes" value="{{ record[12] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Total Remarks</label>
+                                                                            <input type="text" class="form-control" name="total_Remarks" value="{{ record[13] }}">
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                        {% endfor %}
+                                                      
+                                                        
+                                                       
+                                                       
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </form>
+                
+
+                        </main>
+                        {%include "footer.html"%}
+                       
+                        <script>
+                            
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const addNewBtn = document.getElementById('addNewBtn');
+                                const modal = document.getElementById('dialog');
+                                const span = document.getElementsByClassName('close')[0];
+                                const form = document.getElementById('studentForm');
+                                const tableBody = document.querySelector('#studentTable tbody');
+                                const entriesSelect = document.getElementById('entriesSelect');
+                                const searchInput = document.getElementById('searchInput');
+                                const pagination = document.getElementById('pagination');
+                            
+                                let students = [];
+                                let currentPage = 1;
+                                let entriesPerPage = 10;
+                            
+                                function renderTable() {
+                                    tableBody.innerHTML = '';
+                                    const filteredStudents = students.filter(student => 
+                                        student.name.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+                                        student.gender.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+                                        student.phoneNumber.toLowerCase().includes(searchInput.value.toLowerCase())
+                                    );
+                                    const totalEntries = filteredStudents.length;
+                                    const totalPages = Math.ceil(totalEntries / entriesPerPage);
+                                    const start = (currentPage - 1) * entriesPerPage;
+                                    const end = start + entriesPerPage;
+                                    const pageStudents = filteredStudents.slice(start, end);
+                            
+                                    pageStudents.forEach(student => {
+                                       
+                                        newRow.querySelector('.deleteBtn').addEventListener('click', function() {
+                                            students = students.filter(s => s !== student);
+                                            renderTable();
+                                        });
+                                    });
+                            
+                                    renderPagination(totalPages);
+                                }
+                            
+                                function renderPagination(totalPages) {
+                                    pagination.innerHTML = '';
+                                    for (let i = 1; i <= totalPages; i++) {
+                                        const button = document.createElement('button');
+                                        button.classList.add('pagination-button');
+                                        button.textContent = i;
+                                        button.addEventListener('click', () => {
+                                            currentPage = i;
+                                            renderTable();
+                                        });
+                                        pagination.appendChild(button);
+                                    }
+                                }
+                            
+                                addNewBtn.onclick = function() {
+                                    modal.style.display = 'block';
+                                }
+                            
+                                span.onclick = function() {
+                                    modal.style.display = 'none';
+                                }
+                            
+                                window.onclick = function(event) {
+                                    if (event.target == modal) {
+                                        modal.style.display = 'none';
+                                    }
+                                }
+                            
+                                
+                            
+                            
+                            
+                               
+          
+        });
+                        </script>
+                
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/chart-area-demo.js"></script>
+        <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/datatables-demo.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Set the active link on page load based on the current URL
+                var currentPath = window.location.pathname;
+                $('.sb-sidenav .nav-link').each(function() {
+                    var linkPath = $(this).attr('href');
+                    if (currentPath.indexOf(linkPath) !== -1) {
+                        $(this).addClass('active');
+                    }
+                });
+        
+                // Update the active link on click
+                $('.sb-sidenav .nav-link').on('click', function() {
+                    $('.sb-sidenav .nav-link').removeClass('active');
+                    $(this).addClass('active');
+                });
+            });
+        </script>
+        <script>
+            // Bind an event handler to the change event of the customer dropdown
+            $('#customername').on('change', function () {
+                // Capture the value of the selected customer
+                var selectedCustomer = $(this).val();
+        
+                // Make an AJAX request to fetch contact persons for the selected customer
+                $.ajax({
+                    type: 'POST',               // Type of request, POST is used here to send data securely
+                    url: '/get_contacts',       // The URL to send the request to, which is a Flask route
+                    data: { customer_name: selectedCustomer },  // Data sent to the server, key-value pair
+                    success: function (response) {  // Function executed on successful response
+                        // Clear existing options in the contact dropdown
+                        $('#customercontact').empty();
+        
+                        // Add the default option to the contact dropdown
+                        $('#customercontact').append('<option value="">--Select Customer Contact--</option>');
+        
+                        // Iterate over the response data, which contains contact person names
+                        $.each(response, function (index, contact) {
+                            // Append each contact person as an option in the dropdown
+                            $('#customercontact').append('<option value="' + contact + '">' + contact + '</option>');
+                        });
+                    },
+                    error: function () {  // Function executed if the request fails
+                    }
+                });
+            });
+        </script>
+    </body>
+
+</html>
+
+{% include "alert.html" %}
+{% extends "uppercase.html"%}
+{%include 'date.html'%}

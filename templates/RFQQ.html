@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>OmniPro Systems Pvt Ltd</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <head>
+            <!-- Add this link to use Font Awesome icons -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        </head>
+        
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap" rel="stylesheet">
+        <style>
+
+
+        </style>
+    </head>
+    <body class="sb-nav-fixed">
+       {%include"header.html"%}
+                <main>
+                   
+                                    <form action="{{ url_for('RFQQ') }}" method="POST" enctype="multipart/form-data">
+                                        <div class="table-controls">
+                                           
+                                        </div>
+                                    
+                                        <div id="dialog" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close">&times;</span>
+                                                <h2>Add New RFQ</h2>
+                                                <div id="supplierForm">   
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-3">
+                                                            <label for="RFQno"><b>RFQ NO</b></label>
+                                                            <input type="text" class="form-control" id="RFQno" name="RFQno" required onblur="checkrfqno()">
+                                                            <small id="nameError" class="form-text text-danger"></small>
+                                                            <small id="customernameHelp" class="form-text text-muted">Enter a unique RFQ NO</small>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <label for="RFQdate"><b>RFQ Date</b></label>
+                                                            <input type="date" class="form-control" id="RFQdate" name="RFQdate" max="{{ max_date }}">
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <label for="duedate"><b>Due Date</b></label>
+                                                            <input type="date" class="form-control" id="duedate" name="duedate">
+                                                        </div>
+                                                         <!-- Customer Name Dropdown -->
+                                                         <div class="form-group col-md-3">
+                                                            <label for="customername"><b>Customer Name</b>
+                                                                <a href="{{ url_for('Customers') }}"  style="margin-left: 10px;" target="_blank">
+                                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                                </a>
+                                                            </label>
+                                                            
+                                                            <select class="form-control" id="customername" name="customer_name">
+                                                                <option value="" disabled selected>Select Customer</option>
+                                                                {% for customer in customers %}
+                                                                <option value="{{ customer[0] }}">{{ customer[0] }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-3">
+                                                            <label for="endcustomer"><b>End Customer</b></label>
+                                                            <select class="form-control" id="endcustomer" name="endcustomer" onchange="convertSelectedOptionToUppercase(this)">
+                                                                <option value="" disabled selected>Select Customer</option>
+                                                                {% for city in customers %}
+                                                                <option value="{{ city[0] }}">{{ city[0] }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <label for="project"><b>Project</b></label>
+                                                            <input type="text" class="form-control" id="project" name="project" oninput="convertToUppercase(this)">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="applications"><b>Application:</b></label>
+                                                            <textarea class="form-control" id="applications" name="applications" placeholder="Enter applications" rows="3" oninput="convertToUppercase(this)"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-3">
+                                                            <label for="assignedto"><b>Assigned To:</b></label>
+                                                            <select class="form-control" id="assignedto" name="assignedto" onchange="convertSelectedOptionToUppercase(this)">
+                                                                <option value="" disabled selected>Select Employee</option>
+                                                                {% for customer in employee %}
+                                                                <option value="{{ customer[0] }}">{{ customer[0] }}</option>
+                                                                {% endfor %}
+                                                                <!-- Add more options as needed -->
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <label for="customercontact"><b>Customer Contact:</b></label>
+                                                            <select class="form-control" id="customercontact" name="customercontact">
+                                                                <option value="">--Select Customer Contact--</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="containerr">
+                                                        <h5>Item_Part Details</h5>
+                                                        <table id="productTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>S.no</th>
+                                                                    <th>Customer Part No</th>
+                                                                    <th>Manufactured Part No</th>
+                                                                    <th>Manufactured Name</th>
+                                                                    <th>Required Quantity</th>
+                                                                    <th>UOM <button id="addUOMBtn" style="width:25px;padding:2px">+</button></th>
+                                                                    <th>Extended Quantity</th>
+                                                                    <th>Target Price</th>
+                                                                    <th>Remarks</th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <!-- Initial row will be inserted here by JavaScript -->
+                                                            </tbody>
+                                                        </table>
+                                                        <button id="addRowBtn" type="button">
+                                                            
+                                                        </button>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="file"><b>Upload Excel:</b></label>
+                                                        <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls"><br>
+                                                        <a id="download_link" href="/uploads/opportunity_rfq.xlsx">Download Sample File</a><br><br>
+    
+                                                    </div><button type="button" class="btn btn-primary" id="saveButton">Save</button>
+                                                    <button type="button" id="clearButton" class="btn btn-danger">Clear</button>
+
+                                                    <button type="submit" class="btn btn-success">Submit</button>
+                                                    <button type="button" style="width: 5%;" class="btn btn-secondary" id="close_modal">Close</button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            const addRowBtn = document.getElementById('addRowBtn');
+                                            const addUOMBtn = document.getElementById('addUOMBtn');
+                                            const uomModal = document.getElementById('uomModal');
+                                            const saveUOMButton = document.getElementById('saveUOMButton');
+                                            const closeModalBtn = document.getElementById('closeModalBtn');
+                                    
+                                            const saveButton = document.getElementById('saveButton');
+                                            const clearButton = document.getElementById('clearButton'); // New Clear Button
+                                    
+                                            loadProductData();
+                                            loadFormData();
+                                            
+                                            addUOMBtn.addEventListener('click', () => {
+                                                uomModal.style.display = 'block';
+                                            });
+                                    
+                                            closeModalBtn.addEventListener('click', () => {
+                                                uomModal.style.display = 'none';
+                                            });
+                                    
+                                            // Add New UOM and Save to Database
+                                            saveUOMButton.addEventListener('click', () => {
+                                                const newUOM = newUOMInput.value.trim();
+                                                if (newUOM) {
+                                                    fetch('/add_uom', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({ uom_name: newUOM }),
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.status === 'success') {
+                                                            const newOption = document.createElement('option');
+                                                            newOption.value = data.uom_name;
+                                                            newOption.textContent = data.uom_name;
+                                    
+                                                            // Append the new UOM to each dropdown dynamically
+                                                            document.querySelectorAll('.uomDropdown').forEach(dropdown => {
+                                                                dropdown.appendChild(newOption.cloneNode(true));
+                                                            });
+                                    
+                                                            // Clear input and close modal
+                                                            newUOMInput.value = '';
+                                                            uomModal.style.display = 'none';
+                                                        } else {
+                                                            alert('Error adding UOM: ' + data.message);
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error:', error);
+                                                        alert('Failed to save UOM. Please try again.');
+                                                    });
+                                                } else {
+                                                    alert('Please enter a UOM.');
+                                                }
+                                            });
+                                    
+                                            addRowBtn.addEventListener('click', function (event) {
+                                                event.preventDefault();
+                                                addRowToTable();
+                                            });
+                                            
+                                            saveButton.addEventListener('click', () => {
+                                                saveProductsData();
+                                                saveFormData();
+                                            });
+                                    
+                                            // Clear Button Click Event
+                                            clearButton.addEventListener('click', () => {
+                                                clearAllData();
+                                            });
+                                        
+                                            function addRowToTable() {
+                                                const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+                                                const newRow = table.insertRow();
+                                                
+                                                // Create cells in the new row
+                                                const cell1 = newRow.insertCell(0);
+                                                const cell2 = newRow.insertCell(1);
+                                                const cell3 = newRow.insertCell(2);
+                                                const cell4 = newRow.insertCell(3);
+                                                const cell5 = newRow.insertCell(4);
+                                                const cell6 = newRow.insertCell(5);
+                                                const cell7 = newRow.insertCell(6);
+                                                const cell8 = newRow.insertCell(7);
+                                                const cell9 = newRow.insertCell(8);
+                                                const cell10 = newRow.insertCell(9);
+                                                
+                                                // Set cell contents
+                                                cell1.innerHTML = table.rows.length;
+                                                cell2.innerHTML = '<input type="text" name="customerpartno[]" required>';
+                                                cell3.innerHTML = '<select name="manfacturedpartno[]" required></select>';
+                                                cell4.innerHTML = '<select name="manfacturedname[]" required></select>';
+                                                cell5.innerHTML = '<input type="text" name="regularquantity[]" required>';
+                                                const uomSelect = document.createElement('select');
+                                                uomSelect.name = 'UOM[]';
+                                                cell6.appendChild(uomSelect);
+                                                cell7.innerHTML = '<input type="text" name="extendedquantity[]" required>';
+                                                cell8.innerHTML = '<input type="text" name="targetprice[]" required>';
+                                                cell9.innerHTML = '<input type="text" name="remarks[]" required>';
+                                                cell10.innerHTML = '<button type="button" class="deleteRowBtn">x</button>';
+                                                
+                                                // Fetch existing UOMs and populate the dropdown
+                                                fetch('/get_uom')
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        data.forEach(uom => {
+                                                            const option = document.createElement('option');
+                                                            option.value = uom;
+                                                            option.textContent = uom;
+                                                            uomSelect.appendChild(option);
+                                                        });
+                                                    });
+                                                
+                                                // Fetch part numbers and manufacturer names dynamically
+                                                fetch('/get_part_no')
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const dropdownPartNo = cell3.querySelector('select');
+                                                        data.forEach(partNo => {
+                                                            const option = document.createElement('option');
+                                                            option.value = partNo;
+                                                            option.text = partNo;
+                                                            dropdownPartNo.add(option);
+                                                        });
+                                                    });
+                                                
+                                                fetch('/get_manufacturer_name')
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const dropdownManufacturerName = cell4.querySelector('select');
+                                                        data.forEach(manufacturerName => {
+                                                            const option = document.createElement('option');
+                                                            option.value = manufacturerName;
+                                                            option.text = manufacturerName;
+                                                            dropdownManufacturerName.add(option);
+                                                        });
+                                                    });
+                                                
+                                                // Delete Row Button
+                                                cell10.querySelector('.deleteRowBtn').addEventListener('click', function () {
+                                                    const confirmDelete = confirm("Are you sure you want to remove this product?");
+                                                    if (confirmDelete) {
+                                                        this.parentElement.parentElement.remove();
+                                                    }
+                                                });
+                                            }
+                                            
+                                            function saveProductsData() {
+                                                const rows = Array.from(document.querySelectorAll('#productTable tbody tr'));
+                                                const products = rows.map(row => ({
+                                                    customer_part_no: row.cells[1].querySelector('input').value,
+                                                    manufactured_part_no: row.cells[2].querySelector('select').value,
+                                                    manufacturer_name: row.cells[3].querySelector('select').value,
+                                                    regular_quantity: row.cells[4].querySelector('input').value,
+                                                    uom: row.cells[5].querySelector('select').value,
+                                                    extended_quantity: row.cells[6].querySelector('input').value,
+                                                    target_price: row.cells[7].querySelector('input').value,
+                                                    remarks: row.cells[8].querySelector('input').value,
+                                                }));
+                                    
+                                                // Send products to the server for saving
+                                                fetch('/save_product', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ products }),
+                                                })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.status === 'success') {
+                                                        alert('Products saved successfully!');
+                                                    } else {
+                                                        alert('Error saving products: ' + data.message);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                    alert('Products saved successfully!');
+                                                });
+                                            }
+                                    
+                                            function loadProductData() {
+                                                const savedData = localStorage.getItem('productData');
+                                                if (savedData) {
+                                                    const products = JSON.parse(savedData);
+                                                    products.forEach(product => {
+                                                        addRowToTable();
+                                                        const row = document.querySelector('#productTable tbody tr:last-child');
+                                    
+                                                        row.cells[1].querySelector('input').value = product.customer_part_no;
+                                                        row.cells[2].querySelector('select').value = product.manufactured_part_no;
+                                                        row.cells[3].querySelector('select').value = product.manufacturer_name;
+                                                        row.cells[4].querySelector('input').value = product.regular_quantity;
+                                                        row.cells[5].querySelector('select').value = product.uom;
+                                                        row.cells[6].querySelector('input').value = product.extended_quantity;
+                                                        row.cells[7].querySelector('input').value = product.target_price;
+                                                        row.cells[8].querySelector('input').value = product.remarks;
+                                                    });
+                                                }
+                                            }
+                                    
+                                            function loadFormData() {
+                                                const savedData = localStorage.getItem('RFQFormData');
+                                                if (savedData) {
+                                                    const formData = JSON.parse(savedData);
+                                                    for (const key in formData) {
+                                                        const element = document.getElementById(key);
+                                                        if (element) {
+                                                            element.value = formData[key];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                    
+                                            // Clear all data
+                                            function clearAllData() {
+                                                if (confirm('Are you sure you want to clear all saved data?')) {
+                                                    // Clear localStorage
+                                                    localStorage.removeItem('productData');
+                                                    localStorage.removeItem('RFQFormData');
+                                    
+                                                    // Clear form inputs
+                                                    const formElements = document.querySelectorAll('input, select');
+                                                    formElements.forEach(element => {
+                                                        element.value = '';
+                                                    });
+                                    
+                                                    // Clear product table rows
+                                                    const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+                                                    table.innerHTML = '';
+                                    
+                                                    alert('All data cleared!');
+                                                }
+                                            }
+                                    
+                                            function saveFormData() {
+                                                const formData = {
+                                                    rfq_number: document.getElementById('rfq_number').value,
+                                                    customer_name: document.getElementById('customer_name').value,
+                                                    currency: document.getElementById('currency').value,
+                                                };
+                                    
+                                                localStorage.setItem('RFQFormData', JSON.stringify(formData));
+                                            }
+                                        });
+                                    </script>
+                                    
+                                        
+                                  <div id="uomModal" class="modal">
+                                    <div class="modal-content" style="width: 300px;">
+                                        <h4>Add UOM</h4>
+                                        <input type="text" id="newUOMInput" placeholder="Enter UOM"><br>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <button class="btn btn-primary" id="saveUOMButton" style="width: 70px;">Save</button>
+                                            <button class="btn btn-secondary" id="closeModalBtn" style="width: 80px;">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+                                   
+                                       
+              
+                <div class="card mb-4">
+                    <div class="card-header" style="padding: 5px 10px; height: 50px;">
+                        <div class="d-flex justify-content-between align-items-center h-100">
+                            <!-- Left-side buttons (Add, Contacts, Export) -->
+                            <div class="d-flex align-items-center" style="gap: 10px;">
+                                <button id="addNewBtn" type="button" class="btn btn-primary" 
+                                        style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                    <i class="fas fa-plus"></i> Add
+                                </button>
+                                <a href="{{ url_for('manage_rfq') }}">
+                                    <button type="button" class="btn btn-danger" 
+                                            style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                        RFQ ITEMS
+                                    </button>
+                                </a>
+                                <a href="{{ url_for('export_opportunity_data') }}">
+                                    <button type="button" class="btn btn-success" 
+                                            style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                        Export
+                                    </button>
+                                </a>
+                            </div>
+                            <h2 style="color: #20B2AA;"> OPPORTUNITY RFQ</h2>
+                            <!-- Right-side Search form -->
+                            <div class="d-flex align-items-center">
+                                <form method="GET" action="{{ url_for('RFQQ') }}" class="d-flex align-items-center" enctype="multipart/form-data" style="gap: 5px;">
+                                    <label for="search" class="mb-0" style="margin-right: 5px; font-size: 0.85rem;">Search:</label>
+                                    <input type="text" id="search" name="search" value="{{ search_query }}" 
+                                           class="form-control form-control-sm" style="padding: 5px; font-size: 0.85rem; border-radius: 5px;">
+                                    <button type="submit" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.85rem; border-radius: 5px;">
+                                        Search
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                   
+                    <!-- <div class="card-body"> -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <!-- <th>Select</th> -->
+                                        <th scope="col">#</th>
+                                        <th scope="col">RFQ NO</th>
+                                        <th scope="col">RFQ Date</th>
+                                        <th scope="col">Due Date</th>
+                                        <th scope="col">Customer Name</th>
+                                        <th scope="col">End Customer</th>
+                                        <th scope="col">Project</th>
+                                        <th scope="col">Appilications</th>
+                                        <th scope="col">Assigned to</th>
+                                        <th scope="col">Customer Contact</th>
+                                        
+                                        <th scope="col">Action</th>
+                                        <!-- <th scope="col">Message</th> --> 
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for record in opp_rfq %}
+                                    <tr>
+                                        <!-- <td><input type="checkbox" class="recipient" data-phone="{{record[3]}}"></td> -->
+                                        <td>{{ (page - 1) * per_page + loop.index }}</td>
+                                        <td>{{ record[1] }}</td>
+                                        <td>{{ record[2] }}</td>
+                                        <td>{{ record[3] }}</td>
+                                        <td>{{ record[4] }}</td>
+                                        <td>{{ record[5] }}</td>
+                                        <td>{{ record[6] }}</td> 
+                                        <td>{{ record[7] }}</td>
+                                        <td>{{ record[8] }}</td>
+                                        <td>{{ record[9] }}</td>
+                                        
+                                        <td>
+                                            <a href="/update_rfq/{{record.0}}" class="btn btn-warning btn-sm"
+                                            data-toggle="modal" data-target="#modaledit_update{{record.0}}"
+                                            style="position: relative; display: inline-block; cursor: pointer;"
+                                            onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                            onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                            <i class="fas fa-edit"></i>
+                                            <span class="tooltiptext" style="
+                                                visibility: hidden;
+                                                width: 100px;
+                                                background-color: black;
+                                                color: #fff;
+                                                text-align: center;
+                                                border-radius: 5px;
+                                                padding: 5px;
+                                                position: absolute;
+                                                z-index: 1;
+                                                bottom: 125%;
+                                                left: 50%;
+                                                margin-left: -50px;
+                                                opacity: 0;
+                                                transition: opacity 0.3s;
+                                            ">Edit</span>
+                                         </a>
+                                         
+                                         <!-- Delete Button -->
+                                         <a href="/delete_rfq/{{ record.0 }}" onclick="return confirm('Are you sure you want to delete?');" class="btn btn-danger btn-sm"
+                                            style="position: relative; display: inline-block; cursor: pointer;"
+                                            onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                            onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                            <i class="fas fa-trash-alt"></i>
+                                            <span class="tooltiptext" style="
+                                                visibility: hidden;
+                                                width: 100px;
+                                                background-color: black;
+                                                color: #fff;
+                                                text-align: center;
+                                                border-radius: 5px;
+                                                padding: 5px;
+                                                position: absolute;
+                                                z-index: 1;
+                                                bottom: 125%;
+                                                left: 50%;
+                                                margin-left: -50px;
+                                                opacity: 0;
+                                                transition: opacity 0.3s;
+                                            ">Delete</span>
+                                         </a>
+
+                                         <a href="/add_rfq/{{ record[0] }}" class="btn btn-primary btn-sm"
+                                                                data-toggle="modal" data-target="#modaledit{{ record[0] }}"
+                                                                style="position: relative; display: inline-block; cursor: pointer;"
+                                                                onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                                onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                                +
+                                                                <span class="tooltiptext" style="
+                                                                    visibility: hidden;
+                                                                    width: 120px;
+                                                                    background-color: black;
+                                                                    color: #fff;
+                                                                    text-align: center;
+                                                                    border-radius: 5px;
+                                                                    padding: 5px;
+                                                                    position: absolute;
+                                                                    z-index: 1;
+                                                                    bottom: 125%;
+                                                                    left: 50%;
+                                                                    margin-left: -60px;
+                                                                    opacity: 0;
+                                                                    transition: opacity 0.3s;
+                                                                ">Add RFQ Item</span>
+                                                             </a>
+                                                             <a href="/add_supplier_excel/{{ record[0] }}" class="btn btn-success btn-sm"
+                                                             data-toggle="modal" data-target="#modalledit{{ record[0] }}"
+                                                             style="position: relative; display: inline-block; cursor: pointer;"
+                                                             onmouseover="this.querySelector('.tooltiptext').style.visibility = 'visible'; this.querySelector('.tooltiptext').style.opacity = '1';"
+                                                             onmouseout="this.querySelector('.tooltiptext').style.visibility = 'hidden'; this.querySelector('.tooltiptext').style.opacity = '0';">
+                                                             <span class="material-symbols-outlined">
+                                                                 cloud_upload
+                                                                 </span>
+                                                             <span class="tooltiptext" style="
+                                                                 visibility: hidden;
+                                                                 width: 120px;
+                                                                 background-color: black;
+                                                                 color: #fff;
+                                                                 text-align: center;
+                                                                 border-radius: 5px;
+                                                                 padding: 5px;
+                                                                 position: absolute;
+                                                                 z-index: 1;
+                                                                 bottom: 125%;
+                                                                 left: 50%;
+                                                                 margin-left: -60px;
+                                                                 opacity: 0;
+                                                                 transition: opacity 0.3s;
+                                                             ">Import</span>
+                                                          </a>
+                                                         </td>
+                                                      </tr>
+
+                                                      <div class="modal fade" id="modaledit{{ record[0] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel"> Add OPP_RFQ </h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                    
+                                                                    <form method="post" action="{{ url_for('add_rfq') }}" enctype="multipart/form-data">
+                                                                        <div class="form-group">
+                                                                            <label for="modal-name"> RFQ NO</label>
+                                                                            <select class="form-control" id="RFQno" name="RFQno">
+                                                                                {% for branch in opp_rfq %}
+                                                                                    <option value="{{ branch[1] }}" {% if branch[1] == record[1] %} selected {% endif %}>{{ branch[1] }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="customerpartno">Customer Part No</label>
+                                                                            <input type="text" class="form-control" id="customerpartno" name="customerpartno[]" required>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="manfacturedpartno">Manufactured Part No</label>
+                                                                            <select class="form-control" id="manfacturedpartno" name="manfacturedpartno[]">
+                                                                                {% for branch in part_item %}
+                                                                                    <option value="{{ branch[0] }}">{{ branch[0] }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="manufactured_name">Manufactured Name</label>
+                                                                            <select class="form-control" id="manufactured_name" name="manufactured_name[]">
+                                                                                {% for branch in manufacturer_names %}
+                                                                                    <option value="{{ branch[0] }}">{{ branch[0] }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="regularquantity">Regular Quantity</label>
+                                                                            <input type="number" class="form-control" id="regularquantity" name="regularquantity[]" required>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="UOM">UOM</label>
+                                                                            <!-- <input type="text" class="form-control" id="UOM" name="UOM[]" required> -->
+                                                                            <select class="form-control" id="UOM" name="UOM[]">
+                                                                                {% for branch in uom %}
+                                                                                    <option value="{{ branch[1] }}">{{ branch[1] }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="extendedquantity">Extended Quantity</label>
+                                                                            <input type="text" class="form-control" id="extendedquantity" name="extendedquantity[]" required>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="targetprice">Target Price</label>
+                                                                            <input type="number" class="form-control" id="targetprice" name="targetprice[]" required>
+                                                                        </div>
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <label for="remarks">Remarks</label>
+                                                                            <input type="text" class="form-control" id="remarks" name="remarks[]" required>
+                                                                        </div>
+                                                                    
+                                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                                    </form>
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <div class="modal fade" id="modalledit{{ record[0] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel"> Add Opp_RFQ Item </h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                    
+                                                                    <form method="post" action="{{ url_for('add_opp_rfq_excel') }}" enctype="multipart/form-data" >
+                                                                        <div class="form-group">
+                                                                            <label for="modal-name"> RFQ Number </label>
+                                                                            <select class="form-control" id="RFQno" name="RFQno">
+                                                                                {% for branch in opp_rfq %}
+                                                                                    <option value="{{ branch[1] }}" {% if branch[1] == record[1] %} selected {% endif %}>{{ branch[1] }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                        
+                                                                        <div class="form-group ">
+                                                                            <label for="file">Upload Excel:</label>
+                                                                            <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls">
+                                                                        </div>
+                                                                        <a id="download_links" href="{{ url_for('download_sample_excel_opportunity_rfq') }}" download>Download Sample File</a><br>
+                                                    
+                                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                        
+                                        <div id="modaledit_update{{ record[0] }}" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Update RFQ</h4>
+                                                        <span class="b" style="width: 30px; cursor: pointer; font-size: 24px; padding: 5px; display: inline-block; text-align: center; font-weight: bold;" data-dismiss="modal">x</span>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ url_for('update_rfq') }}" method="POST">
+                                                            <input type="hidden" name="id" value="{{ record[0] }}">
+                                                            <div class="form-group">
+                                                                <label>RFQ NO</label>
+                                                                <!-- <input type="text" class="form-control" name="RFQno" value="{{ record[1] }}"> -->
+                                                                <select class="form-control" id="RFQno" name="RFQno">
+                                                                    {% for branch in opp_rfq %}
+                                                                        <option value="{{ branch[1] }}" {% if branch[1] == record[1] %} selected {% endif %}>{{ branch[1] }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>RFQ Date</label>
+                                                                <input type="date" class="form-control" name="RFQdate" value="{{ record[2] }}">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Due Date</label>
+                                                                <input type="date" class="form-control" name="duedate" value="{{ record[3] }}">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Customer Name</label>
+
+                                                                <select class="form-control" id="customername" name="customername">
+                                                                    {% for branch in customers %}
+                                                                        <option value="{{ branch[0] }}" {% if branch[0] == record[4] %} selected {% endif %}>{{ branch[0] }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>End Customer</label>
+                                                                <!-- <input type="text" class="form-control" name="endcustomer" value="{{ record[5] }}"> -->
+                                                                <select class="form-control" id="endcustomer" name="endcustomer">
+                                                                    {% for branch in customers %}
+                                                                        <option value="{{ branch[0] }}" {% if branch[0] == record[5] %} selected {% endif %}>{{ branch[0] }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Project</label>
+                                                                <input type="text" class="form-control" name="project" value="{{ record[6] }}">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Applications</label>
+                                                                <input type="text" class="form-control" name="applications" value="{{ record[7] }}">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Assigned to</label>
+                                                                <!-- <input type="text" class="form-control" name="assignedto" value="{{ record[8] }}"> -->
+                                                                <select class="form-control" id="assignedto" name="assignedto">
+                                                                    {% for branch in employee %}
+                                                                        <option value="{{ branch[0] }}" {% if branch[0] == record[8] %} selected {% endif %}>{{ branch[0] }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Customer Contact</label>
+                                                                <!-- <input type="text" class="form-control" name="customercontact" value="{{ record[9] }}"> -->
+                                                                <select class="form-control" id="customercontact" name="customercontact">
+                                                                    {% for branch in contacts %}
+                                                                        <option value="{{ branch[0] }}" {% if branch[0] == record[9] %} selected {% endif %}>{{ branch[0] }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+
+
+
+
+
+                                    {% endfor %}
+                                    
+                                   
+                                   
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+           
+            <ul class="pagination" style="display: flex;justify-content: flex-end;padding: 20px;">
+                {% if page > 1 %}
+                <li><a href="{{ url_for('RFQ', page=1, search=search_query) }}">First</a></li>
+                <li><a href="{{ url_for('RFQ', page=page-1, search=search_query) }}">Previous</a></li>
+                {% endif %}
+                {% for p in range(1, total_pages + 1) %}
+                <li><a href="{{ url_for('RFQ', page=p, search=search_query) }}">{{ p }}</a></li>
+                {% endfor %}
+                {% if page < total_pages %}
+                <li><a href="{{ url_for('RFQ', page=page+1, search=search_query) }}">Next</a></li>
+                <li><a href="{{ url_for('RFQ', page=total_pages, search=search_query) }}">Last</a></li>
+                {% endif %}
+            </ul>
+
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-Items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy;  OmniPro Pvt Ltd</div>
+                            <div>
+                                <!-- <a href="#">Privacy Policy</a>
+                                &middot; -->
+                                <a href="#">AeriesSoft Tech Solution </a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <script type="text/javascript">
+                    function convertSelectedOptionToUppercase(selectElement) {
+                        // Convert the selected option's text to uppercase
+                        const selectedOption = selectElement.options[selectElement.selectedIndex];
+                        selectedOption.text = selectedOption.text.toUpperCase();
+                    }
+                </script>
+
+<script type="text/javascript">
+    function convertSelectedOptionToUppercase(selectElement) {
+        // Convert the selected option's text to uppercase
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        selectedOption.text = selectedOption.text.toUpperCase();
+    }
+</script>
+
+        
+    </div>
+</div>
+
+<script type="text/javascript">
+    function convertSelectedOptionToUppercase(selectElement) {
+        // Convert the selected option's text to uppercase
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        selectedOption.text = selectedOption.text.toUpperCase();
+    }
+</script>
+<script>
+                            
+    document.addEventListener('DOMContentLoaded', () => {
+        const addNewBtn = document.getElementById('addNewBtn');
+        const modal = document.getElementById('dialog');
+        const span = document.getElementsByClassName('close')[0];
+        const form = document.getElementById('studentForm');
+        const tableBody = document.querySelector('#studentTable tbody');
+        const entriesSelect = document.getElementById('entriesSelect');
+        const searchInput = document.getElementById('searchInput');
+        const pagination = document.getElementById('pagination');
+    
+       
+    
+        addNewBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+    
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+    
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    
+        
+  
+});
+</script>
+<script>
+    
+    $(document).ready(function() {
+        // Initialize DataTable
+        var table = $('#dataTable').DataTable();
+
+        // Add click event listener to table rows
+        $('#dataTable tbody').on('click', 'tr', function() {
+            // Get data from the clicked row
+            var rowData = table.row(this).data();
+            // Fetch the phone number from the second column (index 1) of the clicked row
+            var phoneNumber = rowData[7];
+            // Make the call
+            makeCall(phoneNumber);
+        });
+    });
+
+    // Function to make the call
+    function makeCall(phoneNumber) {
+        // Open the default phone application with the specified phone number
+        window.location.href = 'tel:' + phoneNumber;
+    }
+</script>
+<script type="text/javascript">
+    function convertSelectedOptionToUppercase(selectElement) {
+        // Convert the selected option's text to uppercase
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        selectedOption.text = selectedOption.text.toUpperCase();
+    }
+
+    // Initial call to ensure the default option is in uppercase if needed
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectElement = document.getElementById('customercontact');
+        convertSelectedOptionToUppercase(selectElement);
+    });
+</script>
+
+
+<script type="text/javascript">
+    function convertToUppercase(textareaElement) {
+        // Convert the textarea value to uppercase
+        textareaElement.value = textareaElement.value.toUpperCase();
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="assets/demo/chart-area-demo.js"></script>
+<script src="assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+<script src="assets/demo/datatables-demo.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    function convertToUppercase(inputElement) {
+        // Convert the input value to uppercase
+        inputElement.value = inputElement.value.toUpperCase();
+    }
+</script>
+
+<script>
+function sendBulkWhatsApp() {
+    var message = encodeURIComponent(document.getElementById('message').value);
+    var checkboxes = document.querySelectorAll('.recipient:checked');
+    var phoneNumbers = [];
+    
+    checkboxes.forEach(function(checkbox) {
+        var phone = checkbox.getAttribute('data-phone');
+        phoneNumbers.push(phone);
+    });
+
+    var url = 'https://wa.me/?text=' + message + '&phone=' + phoneNumbers.join(',');
+    window.open(url, '_blank');
+}
+</script>
+<script>
+$(document).ready(function() {
+    // Set the active link on page load based on the current URL
+    var currentPath = window.location.pathname;
+    $('.sb-sidenav .nav-link').each(function() {
+        var linkPath = $(this).attr('href');
+        if (currentPath.indexOf(linkPath) !== -1) {
+            $(this).addClass('active');
+        }
+    });
+
+    // Update the active link on click
+    $('.sb-sidenav .nav-link').on('click', function() {
+        $('.sb-sidenav .nav-link').removeClass('active');
+        $(this).addClass('active');
+    });
+});
+</script>
+<script>
+    // Bind an event handler to the change event of the customer dropdown
+    $('#customername').on('change', function () {
+        // Capture the value of the selected customer
+        var selectedCustomer = $(this).val();
+
+        // Make an AJAX request to fetch contact persons for the selected customer
+        $.ajax({
+            type: 'POST',               // Type of request, POST is used here to send data securely
+            url: '/get_contacts',       // The URL to send the request to, which is a Flask route
+            data: { customer_name: selectedCustomer },  // Data sent to the server, key-value pair
+            success: function (response) {  // Function executed on successful response
+                // Clear existing options in the contact dropdown
+                $('#customercontact').empty();
+
+                // Add the default option to the contact dropdown
+                $('#customercontact').append('<option value="">--Select Customer Contact--</option>');
+
+                // Iterate over the response data, which contains contact person names
+                $.each(response, function (index, contact) {
+                    // Append each contact person as an option in the dropdown
+                    $('#customercontact').append('<option value="' + contact + '">' + contact + '</option>');
+                });
+            },
+            error: function () {  // Function executed if the request fails
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var filePath = '/download/opportunity_rfq.xlsx'; // Path to your download route
+        var downloadLink = document.getElementById('download_link');
+        
+        // Set the href attribute to the file path
+        downloadLink.href = filePath;
+        downloadLink.download = 'opportunity_rfq.xlsx'; // Optional: specify the filename for the download
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var filePath = '/download/opportunity_rfq.xlsx'; // Path to your download route
+        var downloadLink = document.getElementById('download_links');
+        
+        // Set the href attribute to the file path
+        downloadLink.href = filePath;
+        downloadLink.download = 'opportunity_rfq.xlsx'; // Optional: specify the filename for the download
+    });
+</script>
+
+
+
+
+
+<script>
+    function checkrfqno() {
+        var rfqno = document.getElementById('RFQno').value;  // Correct ID for the input field
+        if (rfqno) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/check_rfq_no', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var nameError = document.getElementById('nameError');
+                    var customernameHelp = document.getElementById('customernameHelp');
+                    if (response.exists) {
+                        nameError.textContent = 'RFQ Number already exists. Please choose a different number.';
+                        customernameHelp.style.display = 'none';
+                    } else {
+                        nameError.textContent = '';
+                        customernameHelp.style.display = 'block';
+                    }
+                }
+            };
+            xhr.send('RFQno=' + encodeURIComponent(rfqno));  // Correct field name
+        }
+    }
+</script>
+
+
+
+
+<script>
+    // Assuming saveButton is already defined as the button for saving
+    const saveButton = document.getElementById('saveButton'); // Replace with your actual save button ID
+
+    // Add event listener for the save button
+    saveButton.addEventListener('click', () => {
+        saveRFQData();      // Save RFQ details
+        saveProductsData(); // Save product items
+    });
+
+    // Function to save RFQ details
+    function saveRFQData() {
+        const rfqDetails = {
+            rfq_no: document.getElementById('RFQno').value.trim(),
+            rfq_date: document.getElementById('RFQdate').value.trim(),
+            due_date: document.getElementById('duedate').value.trim(),
+            customer_name: document.getElementById('customername').value,
+            end_customer: document.getElementById('endcustomer').value,
+            project: document.getElementById('project').value.trim(),
+            applications: document.getElementById('applications').value.trim(),
+            assigned_to: document.getElementById('assignedto').value,
+            customer_contact: document.getElementById('customercontact').value,
+        };
+
+        // Save RFQ details to local storage
+        localStorage.setItem('rfqDetails', JSON.stringify(rfqDetails));
+
+        // Send RFQ details to the server for saving
+        fetch('/save_rfq', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rfq: rfqDetails }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('RFQ details saved successfully!');
+            } else {
+                alert('Error saving RFQ details: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Function to load RFQ details from local storage
+    function loadRFQData() {
+        const rfqDetails = JSON.parse(localStorage.getItem('rfqDetails'));
+        
+        if (rfqDetails) {
+            document.getElementById('RFQno').value = rfqDetails.rfq_no || '';
+            document.getElementById('RFQdate').value = rfqDetails.rfq_date || '';
+            document.getElementById('duedate').value = rfqDetails.due_date || '';
+            document.getElementById('customername').value = rfqDetails.customer_name || '';
+            document.getElementById('endcustomer').value = rfqDetails.end_customer || '';
+            document.getElementById('project').value = rfqDetails.project || '';
+            document.getElementById('applications').value = rfqDetails.applications || '';
+            document.getElementById('assignedto').value = rfqDetails.assigned_to || '';
+            document.getElementById('customercontact').value = rfqDetails.customer_contact || '';
+        }
+    }
+
+    // Call load function when the tab is shown or switched
+    document.addEventListener('DOMContentLoaded', () => {
+        loadRFQData(); // Load RFQ details when the page is loaded
+    });
+</script>
+
+
+
+<script>
+// Function to save products data to local storage and database
+// Save Products Data
+saveButton.addEventListener('click', () => {
+    saveProductsData();
+    saveFormData();
+});
+
+// Function to save products data to local storage and database
+function saveProductsData() {
+    const rows = Array.from(document.querySelectorAll('#productTable tbody tr'));
+    
+    // Ensure that we only collect rows that exist
+    const products = rows.map(row => {
+        return {
+            customer_part_no: row.cells[1].querySelector('input').value.trim(),
+            manufactured_part_no: row.cells[2].querySelector('select').value,
+            manufacturer_name: row.cells[3].querySelector('select').value,
+            regular_quantity: row.cells[4].querySelector('input').value.trim(),
+            uom: row.cells[5].querySelector('select').value,
+            extended_quantity: row.cells[6].querySelector('input').value.trim(),
+            target_price: row.cells[7].querySelector('input').value.trim(),
+            remarks: row.cells[8].querySelector('input').value.trim(),
+        };
+    }).filter(product => product.customer_part_no); // Filter out any empty rows
+
+    // Save products to local storage
+    localStorage.setItem('productData', JSON.stringify(products));
+
+    // Send products to the server for saving
+    fetch('/save_product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ products }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Products saved successfully!');
+        } else {
+            alert('Error saving products: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+</script>
+<script>
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'reloadPage' && event.newValue === 'true') {
+            // Reload the page when the signal is detected
+            location.reload();
+        }
+    });
+</script>
+</body>
+</html>
+{% include "close.html" %}
+
+{% include "alert.html" %}
+{% extends "uppercase.html"%}

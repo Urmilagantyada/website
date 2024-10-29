@@ -1,0 +1,22 @@
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    <div style="display: none;">
+        {% for category, message in messages %}
+            <div class="flash-message">{{ message|escape }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the flash messages from the document
+        var flashMessages = document.querySelectorAll('.flash-message');
+
+        // Loop through all flash messages and show them as alerts
+        flashMessages.forEach(function(element) {
+            alert(element.textContent);
+        });
+    });
+</script>
+        
